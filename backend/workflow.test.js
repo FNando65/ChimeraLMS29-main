@@ -84,7 +84,7 @@ function makeValidSouthAfricanId(sequence) {
   let total = 0;
   for (let index = 0; index < prefix.length; index++) {
     let digit = Number(prefix[index]);
-    if (index % 2 === 0) {
+    if (index % 2 === 1) {
       digit *= 2;
       if (digit > 9) digit -= 9;
     }
@@ -136,6 +136,18 @@ after(async () => {
 
 test("registration, tracking, admin review, decision, notifications, and restart persistence", async () => {
   let origin = await startServer();
+  const firstRequestApplicant = makeRegistration(10);
+  firstRequestApplicant.identityNumber = "8001015009087";
+  const firstRequestSubmission = await request(origin, "/api/auth/register", { method: "POST", body: firstRequestApplicant });
+  assert.equal(firstRequestSubmission.response.status, 201);
+  const firstRequestState = JSON.parse(readFileSync(stateFile, "utf8"));
+  assert.ok(firstRequestState.notifications.some(notification => notification.title === "LMS activity"));
+
+  const invalidIdentity = makeRegistration(15);
+  invalidIdentity.identityNumber = "8001015009086";
+  const invalidIdentityResponse = await request(origin, "/api/auth/register", { method: "POST", body: invalidIdentity });
+  assert.equal(invalidIdentityResponse.response.status, 400);
+
   const missingDocuments = await request(origin, "/api/auth/register", { method: "POST", body: makeRegistration(11, false) });
   assert.equal(missingDocuments.response.status, 400);
   assert.match(missingDocuments.data.error, /identity document/i);
@@ -144,6 +156,7 @@ test("registration, tracking, admin review, decision, notifications, and restart
   invalidFile.documents[0] = { kind: "identity", filename: "identity.txt", fileType: "text/plain", contentBase64: Buffer.from("not a document").toString("base64") };
   const invalidDocument = await request(origin, "/api/auth/register", { method: "POST", body: invalidFile });
   assert.equal(invalidDocument.response.status, 400);
+  serverOutput = "";
 
   const applicant = makeRegistration(13);
   const submitted = await request(origin, "/api/auth/register", { method: "POST", body: applicant });

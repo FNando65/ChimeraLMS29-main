@@ -193,7 +193,7 @@ function isValidSouthAfricanIdNumber(value) {
   let total = 0;
   for (let index = 0; index < 12; index++) {
     let digit = Number(value[index]);
-    if (index % 2 === 0) {
+    if (index % 2 === 1) {
       digit *= 2;
       if (digit > 9) digit -= 9;
     }
@@ -324,6 +324,7 @@ if (registerForm) {
         })
       });
 
+      if (!data) throw new Error(`Could not reach the Chimera LMS API at ${API_ORIGIN}. Start the backend with "npm start" from the backend folder, then submit again. No application was saved.`);
       if (data && data.pendingApproval) {
         registerForm.reset();
         ["identity", "qualification", "additional"].forEach(kind => {

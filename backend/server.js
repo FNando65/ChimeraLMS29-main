@@ -61,7 +61,11 @@ function initialData() {
     submissions: [],
     materials: [],
     program_applications: [],
-    audit_log: []
+    audit_log: [],
+    notifications: [],
+    messages: [],
+    announcements: [],
+    quiz_attempts: []
   };
 }
 
@@ -481,7 +485,7 @@ function isValidSouthAfricanId(value) {
   let total = 0;
   for (let index = 0; index < 12; index++) {
     let digit = Number(value[index]);
-    if (index % 2 === 0) {
+    if (index % 2 === 1) {
       digit *= 2;
       if (digit > 9) digit -= 9;
     }
