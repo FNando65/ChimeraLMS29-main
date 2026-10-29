@@ -17,6 +17,7 @@ let selectedFile = null;
 let cachedCourses = [];
 let cachedAssignments = [];
 let cachedUsers = [];
+let cachedApplications = [];
 let cachedAudit = [];
 let cachedNotifications = [];
 let cachedSubmissions = [];
@@ -180,6 +181,70 @@ document.querySelectorAll(".auth-tab").forEach(tab => {
   });
 });
 
+function isValidSouthAfricanIdNumber(value) {
+  if (!/^\d{13}$/.test(value)) return false;
+  const yearPart = Number(value.slice(0, 2));
+  const currentYearPart = new Date().getFullYear() % 100;
+  const year = yearPart > currentYearPart ? 1900 + yearPart : 2000 + yearPart;
+  const month = Number(value.slice(2, 4));
+  const day = Number(value.slice(4, 6));
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day || Number(value[10]) > 1) return false;
+  let total = 0;
+  for (let index = 0; index < 12; index++) {
+    let digit = Number(value[index]);
+    if (index % 2 === 0) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    total += digit;
+  }
+  return (10 - total % 10) % 10 === Number(value[12]);
+}
+
+function isApplicantMinor(dateOfBirth) {
+  if (!dateOfBirth) return false;
+  const birthDate = new Date(`${dateOfBirth}T00:00:00`);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  if (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) age--;
+  return age < 18;
+}
+
+async function encodeApplicationDocument(input, kind) {
+  const file = input.files[0];
+  if (!file) return null;
+  if (file.size > 5 * 1024 * 1024) throw new Error("Each document must be smaller than 5 MB");
+  const contentBase64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = () => reject(new Error(`Could not read ${file.name}`));
+    reader.readAsDataURL(file);
+  });
+  return { kind, filename: file.name, fileType: file.type || "application/octet-stream", contentBase64 };
+}
+
+["identity", "qualification", "additional"].forEach(kind => {
+  const input = document.getElementById(`reg-${kind}-document`);
+  if (input) input.addEventListener("change", () => {
+    const name = document.getElementById(`reg-${kind}-document-name`);
+    if (name) name.textContent = input.files[0]?.name || "No file selected";
+  });
+});
+
+const dateOfBirthInput = document.getElementById("reg-dob");
+const guardianFields = document.getElementById("guardian-fields");
+if (dateOfBirthInput && guardianFields) {
+  dateOfBirthInput.addEventListener("change", () => {
+    const required = isApplicantMinor(dateOfBirthInput.value);
+    guardianFields.hidden = !required;
+    ["reg-guardian-name", "reg-guardian-phone"].forEach(id => {
+      const field = document.getElementById(id);
+      if (field) field.required = required;
+    });
+  });
+}
+
 // Registration
 if (registerForm) {
   registerForm.addEventListener("submit", async (e) => {
@@ -210,6 +275,15 @@ if (registerForm) {
       document.getElementById("reg-id-number").focus();
       return;
     }
+    if (identityNumber && !isValidSouthAfricanIdNumber(identityNumber)) {
+      showToast("Enter a valid 13-digit South African ID number or use your passport number", "error");
+      document.getElementById("reg-id-number").focus();
+      return;
+    }
+    if (isApplicantMinor(document.getElementById("reg-dob").value) && (!document.getElementById("reg-guardian-name").value.trim() || !document.getElementById("reg-guardian-phone").value.trim())) {
+      showToast("Guardian details are required for applicants under 18", "error");
+      return;
+    }
 
     if (password !== confirm) {
       showToast("Passwords do not match");
@@ -224,6 +298,12 @@ if (registerForm) {
     submitButton.disabled = true;
     submitButton.classList.add("is-submitting");
     try {
+      const documents = await Promise.all([
+        encodeApplicationDocument(document.getElementById("reg-identity-document"), "identity"),
+        encodeApplicationDocument(document.getElementById("reg-qualification-document"), "qualification"),
+        encodeApplicationDocument(document.getElementById("reg-additional-document"), "additional")
+      ]);
+      if (!documents[0] || !documents[1]) throw new Error("Upload your identity document and academic qualification document");
       const data = await api("/auth/register", {
         method: "POST",
         body: JSON.stringify({
@@ -234,29 +314,36 @@ if (registerForm) {
           gender: document.querySelector('input[name="gender"]:checked')?.value || "",
           phone: document.getElementById("reg-phone").value.trim(),
           lastSchool: document.getElementById("reg-school").value.trim(),
+          highestQualification: document.getElementById("reg-highest-qualification").value,
+          guardianName: document.getElementById("reg-guardian-name").value.trim(),
+          guardianPhone: document.getElementById("reg-guardian-phone").value.trim(),
           recoveryQuestion: document.getElementById("reg-recovery-question").value,
           recoveryAnswer: document.getElementById("reg-recovery-answer").value.trim(),
-          agreement: document.getElementById("reg-agreement").checked
+          agreement: document.getElementById("reg-agreement").checked,
+          documents: documents.filter(Boolean)
         })
       });
 
       if (data && data.pendingApproval) {
-        showToast("Application submitted. Your learner profile is waiting for admin approval.");
         registerForm.reset();
+        ["identity", "qualification", "additional"].forEach(kind => {
+          const label = document.getElementById(`reg-${kind}-document-name`);
+          if (label) label.textContent = "No file selected";
+        });
+        const reference = data.applicationReference || "Reference pending";
+        const successMessage = document.getElementById("registration-success");
+        successMessage.textContent = `${data.message} Reference number: ${reference}. Please track your application from this login page. You will be notified when a decision has been made.`;
+        successMessage.hidden = false;
+        showAuthTab("track");
+        showScreen("login");
+        document.getElementById("track-identifier").value = reference;
+        document.getElementById("track-password").value = "";
+        showToast(`Application submitted. Reference: ${reference}`);
         return;
       }
-      if (data && data.token) {
-        authToken = data.token;
-        currentUser = data.user;
-        localStorage.setItem("chimera_token", authToken);
-        currentPage = "dashboard";
-        await showApp();
-        showToast("Application submitted for " + data.user.selectedCourse + ". Welcome, " + currentUser.name);
-      } else {
-        showToast("Registration service is unavailable. Please try again shortly.");
-      }
+      throw new Error("The application could not be confirmed. Please try again.");
     } catch (err) {
-      showToast(err.message || "Registration failed");
+      showToast(err.message || "Registration failed", "error");
     } finally {
       if (submitButton) {
         submitButton.disabled = false;
@@ -391,9 +478,9 @@ window.addEventListener("resize", () => {
 });
 closeMobileSidebar();
 
-function showToast(message) {
+function showToast(message, type = "success") {
   toastEl.textContent = message;
-  toastEl.className = "toast show success";
+  toastEl.className = "toast show " + type;
   setTimeout(() => toastEl.classList.remove("show"), 2800);
 }
 
@@ -438,7 +525,7 @@ if (forgotPasswordForm) {
       showAuthTab("login");
       showToast("Password updated. You can now sign in.");
     } catch (error) {
-      showToast(error.message || "Could not reset your password");
+      showToast(error.message || "Could not reset your password", "error");
       button.disabled = false;
     }
   });
@@ -449,24 +536,40 @@ if (trackApplicationForm) {
   trackApplicationForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const identifier = document.getElementById("track-identifier").value.trim();
+    const password = document.getElementById("track-password").value;
     if (!identifier) {
       showToast("Enter your email address or ID number to check your application status.");
+      return;
+    }
+    if (!password) {
+      showToast("Enter the password for your learner account.");
+      document.getElementById("track-password").focus();
       return;
     }
     const button = trackApplicationForm.querySelector('button[type="submit"]');
     button.disabled = true;
     try {
-      const result = await api("/auth/track", { method: "POST", body: JSON.stringify({ identifier }) });
+      const result = await api("/auth/track", { method: "POST", body: JSON.stringify({ identifier, password }) });
       const userState = result?.application || result?.user || null;
       if (!userState) {
         throw new Error("No application was found for that email address or ID number.");
       }
-      const statusLabel = userState.status || "Pending";
-      const course = userState.selectedCourse || userState.course || "programme";
-      const message = `Application status: ${statusLabel}. ${statusLabel === "Approved" ? "Your programme has been approved. You can continue with enrolment." : statusLabel === "Rejected" ? "Your application was not approved. Please contact the admissions team." : "Your application is being reviewed by the admissions team."} ${course ? `Programme: ${course}.` : ""}`;
-      showToast(message);
+      const resultPanel = document.getElementById("application-track-result");
+      resultPanel.replaceChildren();
+      resultPanel.className = `application-track-result ${userState.status === "Approved" ? "" : userState.status === "Rejected" ? "is-rejected" : "is-pending"}`;
+      const heading = document.createElement("h2");
+      heading.textContent = userState.status || "Pending Admin Approval";
+      resultPanel.append(heading);
+      [["Reference", userState.referenceNumber], ["Programme", userState.course], ["Submitted", userState.submittedAt ? new Date(userState.submittedAt).toLocaleDateString() : "—"], ["Next step", userState.nextStep], ["Administrator feedback", userState.reviewNote]].forEach(([label, value]) => {
+        if (!value) return;
+        const row = document.createElement("p");
+        row.textContent = `${label}: ${value}`;
+        resultPanel.append(row);
+      });
+      resultPanel.hidden = false;
+      document.getElementById("track-password").value = "";
     } catch (error) {
-      showToast(error.message || "Unable to retrieve application status.");
+      showToast(error.message || "Unable to retrieve application status.", "error");
     } finally {
       button.disabled = false;
     }
@@ -495,7 +598,7 @@ loginForm.addEventListener("submit", async (e) => {
     await showApp();
     showToast("Welcome, " + currentUser.name + "!");
   } catch (err) {
-    showToast(err.message || "Login failed");
+    showToast(err.message || "Login failed", "error");
   } finally {
     submitButton.disabled = false;
   }
@@ -520,7 +623,7 @@ async function openProfile() {
   try {
     profile = await api("/me") || profile;
   } catch (error) {
-    showToast(error.message || "Could not load your profile");
+    showToast(error.message || "Could not load your profile", "error");
     return;
   }
 
@@ -583,7 +686,7 @@ async function openProfile() {
       showToast("Profile updated successfully");
       if (currentPage === "dashboard") renderPage();
     } catch (error) {
-      showToast(error.message || "Could not update your profile");
+      showToast(error.message || "Could not update your profile", "error");
       saveButton.disabled = false;
     }
   });
@@ -666,7 +769,7 @@ async function loadData() {
       return null;
     }
   };
-  const [courses, assignments, users, audit, notifications, submissions, announcements, messages, materials] = await Promise.all([
+  const [courses, assignments, users, audit, notifications, submissions, announcements, messages, materials, applications] = await Promise.all([
     safeLoad("/courses"),
     safeLoad("/assignments"),
     role === "admin" ? safeLoad("/users") : Promise.resolve(null),
@@ -675,7 +778,8 @@ async function loadData() {
     role === "lecturer" || role === "admin" ? safeLoad("/submissions", true) : Promise.resolve([]),
     safeLoad("/announcements", true),
     role === "learner" || role === "lecturer" ? safeLoad("/messages", true) : Promise.resolve([]),
-    safeLoad("/materials", true)
+    safeLoad("/materials", true),
+    role === "admin" ? safeLoad("/admin/applications") : Promise.resolve([])
   ]);
   // Learner access is based on the authenticated programme returned by the API.
   // Do not fall back to a global demo catalogue when the API is unavailable.
@@ -687,6 +791,7 @@ async function loadData() {
     role !== "learner" || cachedCourses.some(course => course.id === assignment.courseId)
   );
   cachedUsers = users || getOfflineUsers();
+  cachedApplications = applications || [];
   cachedAudit = audit || getOfflineAudit();
   cachedNotifications = notifications || [];
   cachedSubmissions = submissions || [];
@@ -713,7 +818,7 @@ function showNotifications() {
 async function markNotificationsRead(id) {
   try { await api("/notifications/read", { method: "POST", body: JSON.stringify(id ? { id } : {}) });
     cachedNotifications = cachedNotifications.map(n => !id || n.id === id ? { ...n, read: true } : n); updateNotificationBadge(); showNotifications();
-  } catch (e) { showToast(e.message || "Could not update notifications"); }
+  } catch (e) { showToast(e.message || "Could not update notifications", "error"); }
 }
 
 setInterval(async () => {
@@ -752,8 +857,13 @@ setInterval(async () => {
       if (audit && JSON.stringify(audit) !== JSON.stringify(cachedAudit)) { cachedAudit = audit; refreshPage = true; }
     }
     if (role === "admin" && currentPage === "admissions") {
-      const progress = (await Promise.all(cachedCourses.map(course => apiOptional(`/progress?courseId=${encodeURIComponent(course.id)}`)))).flatMap(items => items || []);
-      if (JSON.stringify(progress) !== JSON.stringify(cachedProgress)) { cachedProgress = progress; refreshPage = true; }
+      const [applications, progress] = await Promise.all([
+        api("/admin/applications"),
+        Promise.all(cachedCourses.map(course => apiOptional(`/progress?courseId=${encodeURIComponent(course.id)}`)))
+      ]);
+      if (applications && JSON.stringify(applications) !== JSON.stringify(cachedApplications)) { cachedApplications = applications; refreshPage = true; }
+      const rows = progress.flatMap(items => items || []);
+      if (JSON.stringify(rows) !== JSON.stringify(cachedProgress)) { cachedProgress = rows; refreshPage = true; }
     }
     if (refreshPage && currentUser) { renderNav(); renderPage(); }
   } catch (error) {
@@ -901,16 +1011,18 @@ function attachPageListeners() {
     renderNav();
     renderPage();
   }));
+  document.querySelectorAll("[data-application-view], [data-application-documents]").forEach(button => button.addEventListener("click", () => openApplicationReview(button.dataset.applicationView || button.dataset.applicationDocuments)));
+  document.querySelectorAll("[data-application-decision]").forEach(button => button.addEventListener("click", () => confirmApplicationDecision(button.dataset.applicationId, button.dataset.applicationDecision)));
   document.querySelectorAll("[data-admin-action]").forEach(button => button.addEventListener("click", () => { if (button.id !== "admin-add-user") openAdminAction(button.dataset.adminAction); }));
   const publishCourse = document.getElementById("publish-course-btn");
   if (publishCourse) publishCourse.onclick = openPublishCourseModal;
   document.querySelectorAll("[data-course-decision]").forEach(button => button.onclick = async () => {
     try { await api("/courses/decision", { method: "POST", body: JSON.stringify({ courseId: button.dataset.courseDecision, approved: button.dataset.approved === "true" }) }); await loadData(); renderPage(); showToast("Course decision recorded"); }
-    catch (error) { showToast(error.message || "Could not update course"); }
+    catch (error) { showToast(error.message || "Could not update course", "error"); }
   });
   document.querySelectorAll("[data-user-status]").forEach(button => button.onclick = async () => {
     try { await api("/users/status", { method: "POST", body: JSON.stringify({ userId: button.dataset.userStatus, active: button.dataset.active !== "false" }) }); await loadData(); renderPage(); showToast("Account status updated"); }
-    catch (error) { showToast(error.message || "Could not update account"); }
+    catch (error) { showToast(error.message || "Could not update account", "error"); }
   });
   document.querySelectorAll("[data-enroll-course]").forEach(button => button.onclick = () => updateEnrollment(button.dataset.enrollCourse, "enroll"));
   document.querySelectorAll("[data-leave-course]").forEach(button => button.addEventListener("click", event => {
@@ -922,18 +1034,18 @@ function attachPageListeners() {
   document.querySelectorAll("[data-lesson-delete]").forEach(button => button.onclick = async () => {
     if (!window.confirm("Delete this lesson for the course?")) return;
     try { await api("/lessons/delete", { method: "POST", body: JSON.stringify({ courseId: button.dataset.courseId, group: button.dataset.group, index: Number(button.dataset.index) }) }); await loadData(); renderPage(); showToast("Lesson deleted"); }
-    catch (error) { showToast(error.message || "Could not delete lesson"); }
+    catch (error) { showToast(error.message || "Could not delete lesson", "error"); }
   });
   document.querySelectorAll("[data-assessment-delete]").forEach(button => button.onclick = async () => {
     if (!window.confirm("Delete this assessment and its submissions?")) return;
     try { await api("/assignments/delete", { method: "POST", body: JSON.stringify({ assignmentId: button.dataset.assessmentDelete }) }); await loadData(); renderPage(); showToast("Assessment deleted"); }
-    catch (error) { showToast(error.message || "Could not delete assessment"); }
+    catch (error) { showToast(error.message || "Could not delete assessment", "error"); }
   });
   const lessonForm = document.getElementById("lesson-add-form");
   if (lessonForm) lessonForm.onsubmit = async event => {
     event.preventDefault(); const values = Object.fromEntries(new FormData(lessonForm));
     try { await api("/lessons", { method: "POST", body: JSON.stringify(values) }); await loadData(); renderPage(); showToast("Lesson added"); }
-    catch (error) { showToast(error.message || "Could not add lesson"); }
+    catch (error) { showToast(error.message || "Could not add lesson", "error"); }
   };
   const learnerMessageForm = document.getElementById("learner-message-form");
   if (learnerMessageForm) learnerMessageForm.onsubmit = event => submitMessageForm(event, learnerMessageForm);
@@ -942,12 +1054,12 @@ function attachPageListeners() {
   document.querySelectorAll("[data-message-student]").forEach(button => button.onclick = () => openMessageReply(null, button.dataset.messageStudent, button.dataset.courseId));
   document.querySelectorAll("[data-user-role]").forEach(select => select.onchange = async () => {
     try { await api("/users/manage", { method: "POST", body: JSON.stringify({ action: "role", userId: select.dataset.userRole, role: select.value }) }); await loadData(); renderPage(); showToast("User role updated"); }
-    catch (error) { showToast(error.message || "Could not change role"); }
+    catch (error) { showToast(error.message || "Could not change role", "error"); }
   });
   document.querySelectorAll("[data-user-delete]").forEach(button => button.onclick = async () => {
     if (!window.confirm("Delete this user and their enrolments and submissions?")) return;
     try { await api("/users/manage", { method: "POST", body: JSON.stringify({ action: "delete", userId: button.dataset.userDelete }) }); await loadData(); renderPage(); showToast("User deleted"); }
-    catch (error) { showToast(error.message || "Could not delete user"); }
+    catch (error) { showToast(error.message || "Could not delete user", "error"); }
   });
   const addUserButton = document.getElementById("admin-add-user");
   if (addUserButton) addUserButton.onclick = openAdminUserModal;
@@ -955,13 +1067,13 @@ function attachPageListeners() {
   document.querySelectorAll("[data-course-archive]").forEach(button => button.onclick = async () => {
     if (!window.confirm("Archive this course? Learners will no longer see it in the catalog.")) return;
     try { await api("/courses/manage", { method: "POST", body: JSON.stringify({ action: "archive", courseId: button.dataset.courseArchive }) }); await loadData(); renderPage(); showToast("Course archived"); }
-    catch (error) { showToast(error.message || "Could not archive course"); }
+    catch (error) { showToast(error.message || "Could not archive course", "error"); }
   });
   const adminEnrollmentForm = document.getElementById("admin-enrollment-form");
   if (adminEnrollmentForm) adminEnrollmentForm.onsubmit = async event => {
     event.preventDefault(); const values = Object.fromEntries(new FormData(adminEnrollmentForm));
     try { await api("/enrollments", { method: "POST", body: JSON.stringify(values) }); await loadData(); renderPage(); showToast(values.action === "remove" ? "Learner removed from course" : "Learner enrolled"); }
-    catch (error) { showToast(error.message || "Could not update learner enrolment"); }
+    catch (error) { showToast(error.message || "Could not update learner enrolment", "error"); }
   };
   const auditRoleFilter = document.getElementById("audit-role-filter");
   if (auditRoleFilter) auditRoleFilter.onchange = () => {
@@ -1009,7 +1121,7 @@ function attachPageListeners() {
     } catch (error) {
       setModuleCompletion(courseId, group, moduleIndex, wasCompleted);
       syncProgrammeModuleUI(courseId);
-      showToast(error.message || "Could not save module progress");
+      showToast(error.message || "Could not save module progress", "error");
     } finally {
       // A topic completion should never change the learner's selected section.
       if (currentUser && currentPage !== pageBeforeUpdate) currentPage = pageBeforeUpdate;
@@ -1038,7 +1150,7 @@ function attachPageListeners() {
       if (status) status.textContent = note.trim() ? "Saved" : "Note removed";
     } catch (error) {
       if (status) status.textContent = "Not saved";
-      showToast(error.message || "Could not save your note");
+      showToast(error.message || "Could not save your note", "error");
     } finally {
       button.disabled = false;
     }
@@ -1091,7 +1203,7 @@ function openAdminAction(action) {
     } catch (error) {
       button.disabled = false;
       button.textContent = "Confirm request";
-      showToast(error.message || "Could not record the admin action");
+      showToast(error.message || "Could not record the admin action", "error");
     }
   };
 }
@@ -1250,7 +1362,7 @@ function bindAttendanceRegister() {
       }
       renderAttendanceRows();
     } catch (error) {
-      showToast(error.message || "Could not save attendance");
+      showToast(error.message || "Could not save attendance", "error");
     }
   });
   loadAttendanceRegister();
@@ -1591,7 +1703,7 @@ function renderAdminSection(section) {
     courses: ["ACADEMIC OPERATIONS", "Courses & academic structure", "Organise faculties, programmes, terms, and course assignments."],
     content: ["QUALITY CONTROL", "Content approval", "Review learning resources before students see them."],
     assessments: ["ACADEMIC INTEGRITY", "Assessments & grades", "Review gradebooks and manage institution-wide grading policy."],
-    admissions: ["SECTION 6 · LEARNER LIFECYCLE", "Admissions & enrolment", "Track applications, registration, and learner progression."],
+    admissions: ["SECTION 6 · LEARNER LIFECYCLE", "Pending Enrolment Applications", "Review learner details and supporting documents before making an enrolment decision."],
     attendance: ["LEARNER SUPPORT", "Attendance & discipline", "Monitor participation and follow up when learners need support."],
     communication: ["INSTITUTIONAL COMMS", "Communication center", "Coordinate announcements, support, and student feedback."],
     reports: ["MANAGEMENT INSIGHTS", "Reports & analytics", "Explore academic, financial, and engagement performance."],
@@ -1655,13 +1767,96 @@ function renderAdminCoursesSection(intro) {
   return '<div class="admin-workspace">' + intro + pendingPanel + enrolmentPanel + '<section class="admin-panel"><div class="admin-toolbar">' + tabs + (view === "catalogue" ? '<input type="search" class="admin-table-search" placeholder="Search courses" aria-label="Search courses" />' : "") + '</div>' + body + '</section></div>';
 }
 
+async function openApplicationReview(applicationId) {
+  try {
+    const result = await api(`/admin/applications/${encodeURIComponent(applicationId)}`);
+    if (!result?.application || !result?.learner) throw new Error("Application details are unavailable");
+    const { application, learner } = result;
+    const documents = application.documents.length
+      ? application.documents.map(file => `<li><span><b>${escapeHTML(file.kind === "identity" ? "Identity document" : file.kind === "qualification" ? "Academic qualification" : "Additional certificate")}</b><small>${escapeHTML(file.filename)} · ${(Number(file.fileSize) / 1024 / 1024).toFixed(2)} MB</small></span><button type="button" class="admin-secondary-button" data-application-download="${escapeHTML(application.id)}" data-document-id="${escapeHTML(file.id)}">Download</button></li>`).join("")
+      : "<li>No documents attached.</li>";
+    openModal(`Application ${application.referenceNumber}`, `<div class="application-review"><dl><div><dt>Applicant</dt><dd>${escapeHTML(`${learner.firstName} ${learner.surname}`.trim())}</dd></div><div><dt>Email</dt><dd>${escapeHTML(learner.email)}</dd></div><div><dt>Identity / passport</dt><dd>${escapeHTML(learner.identityNumber || learner.passportNumber || "Not provided")}</dd></div><div><dt>Date of birth</dt><dd>${escapeHTML(learner.dateOfBirth || "Not provided")}</dd></div><div><dt>Phone</dt><dd>${escapeHTML(learner.phone || "Not provided")}</dd></div><div><dt>Programme</dt><dd>${escapeHTML(application.course)}</dd></div><div><dt>Highest qualification</dt><dd>${escapeHTML(learner.highestQualification || "Not provided")}</dd></div><div><dt>School</dt><dd>${escapeHTML(learner.lastSchool || "Not provided")}</dd></div><div><dt>Reference</dt><dd>${escapeHTML(application.referenceNumber)}</dd></div><div><dt>Submitted</dt><dd>${application.submittedAt ? escapeHTML(new Date(application.submittedAt).toLocaleString()) : "—"}</dd></div>${learner.guardianName ? `<div><dt>Guardian</dt><dd>${escapeHTML(learner.guardianName)} · ${escapeHTML(learner.guardianPhone || "")}</dd></div>` : ""}${application.reviewNote ? `<div><dt>Review feedback</dt><dd>${escapeHTML(application.reviewNote)}</dd></div>` : ""}</dl><h4>Supporting documents</h4><ul class="application-document-list">${documents}</ul></div>`, '<button type="button" class="btn btn-primary" id="application-review-close">Close</button>');
+    document.getElementById("application-review-close").onclick = closeModal;
+    document.querySelectorAll("[data-application-download]").forEach(button => button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        const response = await fetch(`${API}/admin/applications/${encodeURIComponent(button.dataset.applicationDownload)}/documents/${encodeURIComponent(button.dataset.documentId)}`, {
+          headers: { Authorization: `Bearer ${authToken}` }
+        });
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error.error || "Could not retrieve this document");
+        }
+        const fileUrl = URL.createObjectURL(await response.blob());
+        const link = document.createElement("a");
+        link.href = fileUrl;
+        link.download = button.closest("li").querySelector("small").textContent.split(" · ")[0];
+        document.body.append(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(fileUrl), 1000);
+      } catch (error) {
+        showToast(error.message || "Could not retrieve this document", "error");
+      } finally {
+        button.disabled = false;
+      }
+    }));
+  } catch (error) {
+    showToast(error.message || "Could not load application details", "error");
+  }
+}
+
+function confirmApplicationDecision(applicationId, decision) {
+  const isApproval = decision === "approved";
+  const verb = isApproval ? "Approve" : "Reject";
+  const feedbackField = isApproval ? "" : '<label class="admin-form-field">Reason for rejection<textarea id="application-decision-feedback" rows="3" required maxlength="1000"></textarea></label>';
+  openModal(`${verb} enrolment application`, `<p>${isApproval ? "Approving this application will activate the learner account and create the programme enrolment." : "Rejecting this application will prevent learner dashboard access. Enter feedback that the applicant can see when tracking their application."}</p>${feedbackField}`, '<button type="button" class="btn btn-ghost" id="application-decision-cancel">Cancel</button><button type="button" class="btn btn-primary" id="application-decision-confirm">' + verb + " application</button>");
+  document.getElementById("application-decision-cancel").onclick = closeModal;
+  document.getElementById("application-decision-confirm").onclick = async () => {
+    const feedback = document.getElementById("application-decision-feedback")?.value.trim() || "";
+    if (!isApproval && feedback.length < 4) {
+      showToast("Enter a clear rejection reason", "error");
+      document.getElementById("application-decision-feedback").focus();
+      return;
+    }
+    const button = document.getElementById("application-decision-confirm");
+    button.disabled = true;
+    button.textContent = "Saving decision…";
+    try {
+      const result = await api(`/admin/applications/${encodeURIComponent(applicationId)}/decision`, {
+        method: "POST",
+        body: JSON.stringify({ decision, feedback })
+      });
+      const [applications, users] = await Promise.all([api("/admin/applications"), api("/users")]);
+      cachedApplications = applications || cachedApplications;
+      cachedUsers = users || cachedUsers;
+      closeModal();
+      renderPage();
+      showToast(isApproval
+        ? `Application approved. In-app notification sent; email ${result.notifications.email === "not_configured" ? "is not configured" : "sent"}.`
+        : "Application rejected and learner notified in the LMS.");
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = `${verb} application`;
+      showToast(error.message || "Could not save this decision", "error");
+    }
+  };
+}
+
 function renderAdminAdmissionsSection(intro) {
   const view = adminSectionView.admissions;
   const tabs = adminViewTabs("admissions", [["applications", "Applications"], ["enrolments", "Enrolments"], ["progression", "Progression"]], view);
   let body = "";
   if (view === "applications") {
-    const learners = cachedUsers.filter(user => user.role === "learner" && user.selectedCourse);
-    body = '<div class="admin-table-wrap"><table class="admin-data-table"><thead><tr><th>Applicant</th><th>Programme</th><th>Submitted</th><th>Account</th><th>Status</th></tr></thead><tbody>' + (learners.map(user => '<tr><td><b>' + escapeHTML(user.name) + '</b><small class="admin-cell-sub">' + escapeHTML(user.email) + '</small></td><td>' + escapeHTML(user.selectedCourse) + '</td><td>' + (user.lastLogin ? new Date(user.lastLogin).toLocaleDateString("en-ZA") : "—") + '</td><td>' + escapeHTML(user.status || "Active") + '</td><td><span class="admin-status">' + (user.status === "Pending" ? "Pending approval" : user.status === "Rejected" ? "Rejected" : user.status === "Inactive" ? "Inactive" : "Approved") + '</span> ' + (user.status === "Pending" ? '<button type="button" class="admin-secondary-button" data-user-status="' + escapeHTML(user.id) + '" data-active="true" data-next-status="Active">Approve</button><button type="button" class="admin-secondary-button" data-user-status="' + escapeHTML(user.id) + '" data-active="false" data-next-status="Rejected">Reject</button>' : '') + '</td></tr>').join("") || '<tr><td colspan="5" class="admin-empty-row">No learner applications are available.</td></tr>') + '</tbody></table></div>';
+    const applicationRows = cachedApplications.map(application => {
+      const status = String(application.status || "pending");
+      const statusLabel = status === "approved" ? "Approved" : status === "rejected" ? "Rejected" : "Pending Admin Approval";
+      const pendingActions = status === "pending"
+        ? '<button type="button" class="admin-secondary-button" data-application-decision="approved" data-application-id="' + escapeHTML(application.id) + '">Approve</button><button type="button" class="admin-secondary-button" data-application-decision="rejected" data-application-id="' + escapeHTML(application.id) + '">Reject</button>'
+        : "";
+      return '<tr><td><b>' + escapeHTML(application.name) + '</b><small class="admin-cell-sub">' + escapeHTML(application.email) + '</small></td><td>' + escapeHTML(application.course) + '</td><td><code>' + escapeHTML(application.referenceNumber) + '</code></td><td>' + (application.submittedAt ? new Date(application.submittedAt).toLocaleDateString("en-ZA") : "—") + '</td><td><span class="admin-status ' + (status === "rejected" ? "is-inactive" : status === "pending" ? "pending-status" : "") + '">' + statusLabel + '</span></td><td><span>' + Number(application.documentCount || 0) + ' documents</span><div class="admin-inline-actions"><button type="button" class="admin-secondary-button" data-application-view="' + escapeHTML(application.id) + '">View Application</button><button type="button" class="admin-secondary-button" data-application-documents="' + escapeHTML(application.id) + '">View Documents</button>' + pendingActions + '</div></td></tr>';
+    }).join("");
+    body = '<div class="admin-table-wrap"><table class="admin-data-table"><thead><tr><th>Applicant</th><th>Programme</th><th>Reference</th><th>Submitted</th><th>Status</th><th>Review</th></tr></thead><tbody>' + (applicationRows || '<tr><td colspan="6" class="admin-empty-row">No enrolment applications are available.</td></tr>') + '</tbody></table></div>';
   } else if (view === "enrolments") {
     body = '<div class="admin-table-wrap"><table class="admin-data-table"><thead><tr><th>Learner</th><th>Email</th><th>Course</th><th>Progress</th><th>Submissions</th></tr></thead><tbody>' + (cachedProgress.map(item => '<tr><td><b>' + escapeHTML(item.name) + '</b></td><td>' + escapeHTML(item.email) + '</td><td>' + escapeHTML(item.courseTitle) + '</td><td>' + (Number(item.progress) || 0) + '%</td><td>' + (Number(item.submissions) || 0) + '</td></tr>').join("") || '<tr><td colspan="5" class="admin-empty-row">No course enrolments are available.</td></tr>') + '</tbody></table></div>';
   } else {
@@ -1796,7 +1991,7 @@ function openQuizModal(assignmentId) {
     const answers=questions.map((_,i)=>{const selected=document.querySelector(`input[name="quiz-${i}"]:checked`);return selected?Number(selected.value):-1;});
     if(answers.includes(-1)){showToast("Answer every question before submitting");return;}
     try{const result=await api("/quiz/submit",{method:"POST",body:JSON.stringify({assignmentId,answers})});closeModal();await loadData();renderNav();renderPage();showToast(`Quiz submitted: ${result.score}%`);}
-    catch(error){showToast(error.message||"Could not submit quiz");}
+    catch(error){showToast(error.message||"Could not submit quiz","error");}
   };
 }
 
@@ -1969,7 +2164,7 @@ function openSubmitModal(assignmentId) {
       renderPage();
     } catch (error) {
       submitButton.disabled = false;
-      showToast(error.message || `Could not submit the ${submissionType}`);
+      showToast(error.message || `Could not submit the ${submissionType}`, "error");
     }
   };
 }
@@ -1979,7 +2174,7 @@ function openPublishCourseModal() {
   document.getElementById("modal-cancel").onclick = closeModal;
   document.getElementById("modal-publish").onclick = async () => {
     try { await api("/courses/publish", { method: "POST", body: JSON.stringify({ title: document.getElementById("publish-course-title").value, code: document.getElementById("publish-course-code").value }) }); closeModal(); await loadData(); renderPage(); showToast("Course sent to administrators for approval"); }
-    catch (error) { showToast(error.message || "Could not publish course"); }
+    catch (error) { showToast(error.message || "Could not publish course", "error"); }
   };
 }
 
@@ -1999,7 +2194,7 @@ async function updateEnrollment(courseId, action, button = null) {
     renderPage();
     showToast(action === "leave" ? "You left the course" : "You are enrolled in the course");
   } catch (error) {
-    showToast(error.message || "Could not update enrolment");
+    showToast(error.message || "Could not update enrolment", "error");
   } finally {
     if (button) {
       button.disabled = false;
@@ -2011,7 +2206,7 @@ async function updateEnrollment(courseId, action, button = null) {
 async function submitAnnouncementForm(event, form) {
   event.preventDefault(); const values = Object.fromEntries(new FormData(form));
   try { await api("/announcements", { method: "POST", body: JSON.stringify(values) }); await loadData(); renderPage(); showToast("Announcement posted"); }
-  catch (error) { showToast(error.message || "Could not post announcement"); }
+  catch (error) { showToast(error.message || "Could not post announcement", "error"); }
 }
 
 function openMessageReply(messageId, recipientId, courseId) {
@@ -2022,7 +2217,7 @@ function openMessageReply(messageId, recipientId, courseId) {
   document.getElementById("reply-cancel").onclick = closeModal;
   document.getElementById("reply-send").onclick = async () => {
     try { await api("/messages", { method: "POST", body: JSON.stringify({ courseId, recipientId, message: document.getElementById("reply-message").value }) }); closeModal(); await loadData(); renderPage(); showToast("Message sent"); }
-    catch (error) { showToast(error.message || "Could not send message"); }
+    catch (error) { showToast(error.message || "Could not send message", "error"); }
   };
 }
 
@@ -2031,7 +2226,7 @@ function openAdminUserModal() {
   document.getElementById("user-create-cancel").onclick=closeModal;
   document.getElementById("user-create-submit").onclick=async()=>{
     try{await api("/users/manage",{method:"POST",body:JSON.stringify({action:"create",name:document.getElementById("new-user-name").value,email:document.getElementById("new-user-email").value,role:document.getElementById("new-user-role").value,password:document.getElementById("new-user-password").value})});closeModal();await loadData();renderPage();showToast("User account created");}
-    catch(error){showToast(error.message||"Could not create account");}
+    catch(error){showToast(error.message||"Could not create account","error");}
   };
 }
 
@@ -2041,7 +2236,7 @@ function openCourseReassign(courseId) {
   document.getElementById("reassign-cancel").onclick=closeModal;
   document.getElementById("reassign-submit").onclick=async()=>{
     try{await api("/courses/manage",{method:"POST",body:JSON.stringify({action:"reassign",courseId,lecturerId:document.getElementById("reassign-lecturer").value})});closeModal();await loadData();renderPage();showToast("Course reassigned");}
-    catch(error){showToast(error.message||"Could not reassign course");}
+    catch(error){showToast(error.message||"Could not reassign course","error");}
   };
 }
 
@@ -2091,7 +2286,7 @@ function openCreateAssessmentModal() {
       showToast(`Assessment "${title}" created`);
       renderPage();
     } catch (error) {
-      showToast(error.message || "Could not create the assessment");
+      showToast(error.message || "Could not create the assessment", "error");
     }
   };
 }
@@ -2161,7 +2356,7 @@ function openUploadModal() {
       renderPage();
       showToast("Topic content uploaded");
     } catch (error) {
-      showToast(error.message || "Could not upload content");
+      showToast(error.message || "Could not upload content", "error");
       uploadButton.disabled = false;
     }
   };
@@ -2181,7 +2376,7 @@ function openGradeModal(student, assignment, studentName = student, assignmentTi
     try {
       await api("/submissions/grade", { method: "POST", body: JSON.stringify({ student, assignment, score: Number(score), feedback: document.getElementById("grade-feedback").value }) });
       closeModal(); await loadData(); renderPage(); showToast("Grade " + score + "% submitted for " + studentName);
-    } catch (error) { showToast(error.message || "Could not submit grade"); }
+    } catch (error) { showToast(error.message || "Could not submit grade", "error"); }
   };
 }
 

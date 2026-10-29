@@ -134,15 +134,16 @@
         </div>
       </aside>
       <section class="auth-panel">
+        <div id="registration-success" class="registration-result" role="status" hidden></div>
         <div class="login-brand">
           <img class="auth-brand-logo" src="assets/chimera-holdings-logo.png" alt="Chimera Holdings" />
         </div>
 
         <div class="auth-tab-bar" role="tablist" aria-label="Authentication options">
           <button type="button" class="auth-tab active" data-auth-tab="login" role="tab" aria-selected="true">Login</button>
-          <button type="button" class="auth-tab" data-auth-tab="register" role="tab" aria-selected="false">Create profile</button>
-          <button type="button" class="auth-tab" data-auth-tab="track" role="tab" aria-selected="false">Track application</button>
-          <button type="button" class="auth-tab" data-auth-tab="forgot" role="tab" aria-selected="false">Forgot password</button>
+          <button type="button" class="auth-tab" data-auth-tab="register" role="tab" aria-selected="false">Create Profile</button>
+          <button type="button" class="auth-tab" data-auth-tab="track" role="tab" aria-selected="false">Track Application</button>
+          <button type="button" class="auth-tab" data-auth-tab="forgot" role="tab" aria-selected="false">Forgot Password</button>
         </div>
 
         <div class="auth-form-panel">
@@ -181,9 +182,14 @@
             </div>
             <div class="form-group">
               <label for="track-identifier">Email address or ID number</label>
-              <input type="text" id="track-identifier" name="identifier" placeholder="name@example.com or 13-digit ID" autocomplete="username" required />
+              <input type="text" id="track-identifier" name="identifier" placeholder="Email, ID number, or application reference" autocomplete="username" required />
+            </div>
+            <div class="form-group">
+              <label for="track-password">Account password</label>
+              <input type="password" id="track-password" name="password" autocomplete="current-password" required />
             </div>
             <button type="submit" class="btn btn-primary">Check status</button>
+            <div id="application-track-result" class="application-track-result" role="status" hidden></div>
           </form>
 
           <form id="forgot-password-form" class="auth-form" data-auth-form="forgot">
@@ -257,11 +263,29 @@
             <fieldset class="registration-field gender-field"><legend>Gender <span aria-hidden="true">*</span></legend><div class="gender-options"><label><input type="radio" name="gender" value="female" required /><span>Female</span></label><label><input type="radio" name="gender" value="male" /><span>Male</span></label><label><input type="radio" name="gender" value="prefer-not-to-say" /><span>Prefer not to say</span></label></div></fieldset>
             <div class="registration-field"><label for="reg-phone">Contact phone number <span aria-hidden="true">*</span></label><input type="tel" id="reg-phone" name="phone" autocomplete="tel" required /></div>
             <div class="registration-field"><label for="reg-school">Last school attended <span aria-hidden="true">*</span></label><input type="text" id="reg-school" name="lastSchool" required /></div>
+            <div class="registration-field"><label for="reg-highest-qualification">Highest qualification <span aria-hidden="true">*</span></label><select id="reg-highest-qualification" name="highestQualification" required><option value="">Choose your highest qualification</option><option>Matric / National Senior Certificate</option><option>Higher Certificate</option><option>Diploma</option><option>Degree</option><option>Other recognised qualification</option></select></div>
+          </div>
+        </section>
+
+        <section class="registration-section" aria-labelledby="documents-heading">
+          <div class="registration-section-heading"><span>03</span><div><h2 id="documents-heading">Supporting documents</h2><p>Upload clear, readable copies. PDF, JPG, JPEG, or PNG; maximum 5 MB per file.</p></div></div>
+          <div class="registration-grid">
+            <div class="registration-field"><label for="reg-identity-document">Certified ID or passport copy <span aria-hidden="true">*</span></label><input type="file" id="reg-identity-document" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required /><small class="file-selection" id="reg-identity-document-name">No file selected</small></div>
+            <div class="registration-field"><label for="reg-qualification-document">Matric results or qualification certificate <span aria-hidden="true">*</span></label><input type="file" id="reg-qualification-document" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required /><small class="file-selection" id="reg-qualification-document-name">No file selected</small></div>
+            <div class="registration-field full-width"><label for="reg-additional-document">Additional academic certificate <span class="field-note">(optional)</span></label><input type="file" id="reg-additional-document" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" /><small class="file-selection" id="reg-additional-document-name">No file selected</small></div>
+          </div>
+        </section>
+
+        <section class="registration-section" id="guardian-fields" aria-labelledby="guardian-heading" hidden>
+          <div class="registration-section-heading"><span>04</span><div><h2 id="guardian-heading">Guardian details</h2><p>Required for applicants under 18.</p></div></div>
+          <div class="registration-grid">
+            <div class="registration-field"><label for="reg-guardian-name">Guardian full name <span aria-hidden="true">*</span></label><input type="text" id="reg-guardian-name" name="guardianName" autocomplete="name" /></div>
+            <div class="registration-field"><label for="reg-guardian-phone">Guardian phone number <span aria-hidden="true">*</span></label><input type="tel" id="reg-guardian-phone" name="guardianPhone" autocomplete="tel" /></div>
           </div>
         </section>
 
         <section class="registration-section" aria-labelledby="password-heading">
-          <div class="registration-section-heading"><span>03</span><div><h2 id="password-heading">Set up your password</h2><p>Use at least eight characters.</p></div></div>
+          <div class="registration-section-heading"><span>05</span><div><h2 id="password-heading">Set up your password</h2><p>Use at least eight characters.</p></div></div>
           <div class="registration-grid">
             <div class="registration-field"><label for="reg-password">Password <span aria-hidden="true">*</span></label><input type="password" id="reg-password" name="password" autocomplete="new-password" minlength="8" required /></div>
             <div class="registration-field"><label for="reg-confirm">Enter your password again <span aria-hidden="true">*</span></label><input type="password" id="reg-confirm" name="passwordConfirm" autocomplete="new-password" minlength="8" required /></div>
@@ -271,7 +295,7 @@
         </section>
 
         <section class="registration-section agreement-section" aria-labelledby="agreement-heading">
-          <div class="registration-section-heading"><span>04</span><div><h2 id="agreement-heading">Your agreement</h2><p>Review how your registration details will be used.</p></div></div>
+          <div class="registration-section-heading"><span>06</span><div><h2 id="agreement-heading">Your agreement</h2><p>Review how your registration details will be used.</p></div></div>
           <div class="agreement-copy"><p>By submitting this form, I confirm that the details I have provided are accurate. I agree that Chimera Holdings may use these details to create and manage my learner account and programme application, and to contact me about my registration.</p></div>
           <label class="agreement-check"><input type="checkbox" id="reg-agreement" name="agreement" required /><span>I have read and agree to the registration terms above.</span></label>
         </section>

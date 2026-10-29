@@ -20,7 +20,9 @@ const PORT = Number(process.env.PORT || 5000);
 // Listen on all interfaces so hosted deployments and other devices can reach
 // the API. Set HOST=127.0.0.1 to restrict it to this machine.
 const HOST = process.env.HOST || "0.0.0.0";
-const DATA_FILE = path.join(__dirname, "data.json");
+const DATA_FILE = process.env.CHIMERA_DATA_FILE
+  ? path.resolve(process.env.CHIMERA_DATA_FILE)
+  : path.join(__dirname, "data.json");
 const PROGRAMMES_FILE = path.join(__dirname, "programmes.json");
 const SUPABASE_URL = String(process.env.SUPABASE_URL || "").replace(/\/+$/, "");
 // Prefer Supabase's current server-side secret key. Keep the legacy service_role
@@ -69,7 +71,7 @@ function loadData() {
   try {
     const data = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
     if (!Array.isArray(data.attendance)) data.attendance = [];
-    for (const key of ["notifications", "audit_log", "courses", "assignments", "submissions", "enrollments", "materials", "messages", "announcements", "quiz_attempts"]) if (!Array.isArray(data[key])) data[key] = [];
+    for (const key of ["notifications", "audit_log", "courses", "assignments", "submissions", "enrollments", "materials", "program_applications", "messages", "announcements", "quiz_attempts"]) if (!Array.isArray(data[key])) data[key] = [];
     return data;
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
@@ -86,7 +88,7 @@ function saveData(data) {
     context.dirty = true;
     return;
   }
-  fs.mkdirSync(__dirname, { recursive: true });
+  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
   const tempFile = `${DATA_FILE}.tmp`;
   fs.writeFileSync(tempFile, JSON.stringify(data, null, 2));
   fs.renameSync(tempFile, DATA_FILE);
@@ -466,6 +468,80 @@ function isDateKey(value) {
     new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value;
 }
 
+function isValidSouthAfricanId(value) {
+  if (!/^\d{13}$/.test(value)) return false;
+  const yearPart = Number(value.slice(0, 2));
+  const currentYearPart = new Date().getUTCFullYear() % 100;
+  const year = yearPart > currentYearPart ? 1900 + yearPart : 2000 + yearPart;
+  const month = Number(value.slice(2, 4));
+  const day = Number(value.slice(4, 6));
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return false;
+  if (Number(value[10]) > 1) return false;
+  let total = 0;
+  for (let index = 0; index < 12; index++) {
+    let digit = Number(value[index]);
+    if (index % 2 === 0) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    total += digit;
+  }
+  return (10 - total % 10) % 10 === Number(value[12]);
+}
+
+function isMinor(dateOfBirth) {
+  const birthDate = new Date(`${dateOfBirth}T00:00:00Z`);
+  const today = new Date();
+  let age = today.getUTCFullYear() - birthDate.getUTCFullYear();
+  const birthdayHasPassed = today.getUTCMonth() > birthDate.getUTCMonth() ||
+    (today.getUTCMonth() === birthDate.getUTCMonth() && today.getUTCDate() >= birthDate.getUTCDate());
+  if (!birthdayHasPassed) age--;
+  return age < 18;
+}
+
+function parseApplicationDocument(document, requiredKind) {
+  if (!document || document.kind !== requiredKind) {
+    throw Object.assign(new Error(`Upload the required ${requiredKind === "identity" ? "identity" : "academic qualification"} document`), { status: 400 });
+  }
+  const filename = path.basename(String(document.filename || "").replace(/\\/g, "/")).replace(/[\r\n"]/g, "_").slice(0, 120);
+  const contentBase64 = String(document.contentBase64 || "");
+  if (!filename || !contentBase64 || contentBase64.length > 7_000_000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(contentBase64)) {
+    throw Object.assign(new Error("Choose a valid document file"), { status: 400 });
+  }
+  const bytes = Buffer.from(contentBase64, "base64");
+  if (!bytes.length || bytes.length > 5 * 1024 * 1024 || bytes.toString("base64") !== contentBase64) {
+    throw Object.assign(new Error("Documents must be smaller than 5 MB"), { status: 400 });
+  }
+  const extension = path.extname(filename).toLowerCase();
+  const signature = extension === ".pdf" && bytes.subarray(0, 5).toString("ascii") === "%PDF-"
+    ? "application/pdf"
+    : extension === ".png" && bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+      ? "image/png"
+      : [".jpg", ".jpeg"].includes(extension) && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff
+        ? "image/jpeg"
+        : "";
+  if (!signature || (document.fileType && document.fileType !== signature && document.fileType !== "application/octet-stream")) {
+    throw Object.assign(new Error("Documents must be valid PDF, JPG, JPEG, or PNG files"), { status: 400 });
+  }
+  return {
+    id: crypto.randomUUID(),
+    kind: requiredKind,
+    filename,
+    fileType: signature,
+    fileSize: bytes.length,
+    contentBase64
+  };
+}
+
+function createApplicationReference(applications) {
+  let referenceNumber;
+  do {
+    referenceNumber = `CHM-${new Date().getUTCFullYear()}-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
+  } while (applications.some(application => application.referenceNumber === referenceNumber));
+  return referenceNumber;
+}
+
 function requireRole(user, roles) {
   return Boolean(user && roles.includes(user.role));
 }
@@ -579,14 +655,22 @@ async function handleRequest(request, response) {
   }
 
   if (request.method === "POST" && route === "/api/auth/register") {
-    const body = await readBody(request);
+    const body = await readBody(request, 24 * 1024 * 1024);
     const username = String(body.username || "").trim();
+    const firstName = String(body.firstName || "").trim();
+    const surname = String(body.surname || "").trim();
+    const name = `${firstName} ${surname}`.trim();
     const email = String(body.email || "").trim().toLowerCase();
     const password = String(body.password || "");
+    const identityNumber = String(body.identityNumber || "").trim();
+    const passportNumber = String(body.passportNumber || "").trim();
+    const dateOfBirth = String(body.dateOfBirth || "").trim();
+    const phone = String(body.phone || "").trim();
     if (!/^[A-Za-z0-9._-]{3,30}$/.test(username)) return send(response, 400, { error: "Username must be 3–30 letters, numbers, dots, underscores, or hyphens" });
-    if (!email || !String(body.name || "").trim()) return send(response, 400, { error: "Name and email are required" });
+    if (!firstName || !surname || firstName.length > 80 || surname.length > 80) return send(response, 400, { error: "Enter a valid first name and surname" });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return send(response, 400, { error: "Enter a valid email address" });
     if (String(body.emailConfirm || "").trim().toLowerCase() !== email) return send(response, 400, { error: "Email addresses do not match" });
-    if (data.users.some(item => item.email.toLowerCase() === email)) return send(response, 409, { error: "An account with this email already exists" });
+    if (data.users.some(item => loginKey(item.email) === email)) return send(response, 409, { error: "An account with this email already exists" });
     if (data.users.some(item =>
       loginKey(item.username) === loginKey(username) ||
       loginKey(item.email) === loginKey(username) ||
@@ -594,26 +678,62 @@ async function handleRequest(request, response) {
     )) return send(response, 409, { error: "That username is already in use" });
     if (password !== String(body.passwordConfirm || "")) return send(response, 400, { error: "Passwords do not match" });
     if (password.length < 8) return send(response, 400, { error: "Password must have at least 8 characters" });
-    if (!body.identityNumber && !body.passportNumber) return send(response, 400, { error: "An identity or passport number is required" });
-    if (accountNumberInUse(data.users, "identityNumber", body.identityNumber)) return send(response, 409, { error: "That identity number is already registered" });
-    if (accountNumberInUse(data.users, "passportNumber", body.passportNumber)) return send(response, 409, { error: "That passport number is already registered" });
-    if (!body.agreement) return send(response, 400, { error: "Please accept the registration agreement" });
+    if (!dateOfBirth || !isDateKey(dateOfBirth) || dateOfBirth >= new Date().toISOString().slice(0, 10)) return send(response, 400, { error: "Enter a valid date of birth" });
+    if (!phone || !/^\+?[0-9][0-9\s()-]{6,19}$/.test(phone)) return send(response, 400, { error: "Enter a valid contact phone number" });
+    if (!["female", "male", "prefer-not-to-say"].includes(String(body.gender || ""))) return send(response, 400, { error: "Choose a gender option" });
+    if (identityNumber && !isValidSouthAfricanId(identityNumber)) return send(response, 400, { error: "Enter a valid 13-digit South African ID number or use your passport number" });
+    if (!identityNumber && !/^[A-Za-z0-9][A-Za-z0-9 -]{4,19}$/.test(passportNumber)) return send(response, 400, { error: "Enter a valid identity or passport number" });
+    if (accountNumberInUse(data.users, "identityNumber", identityNumber)) return send(response, 409, { error: "That identity number is already registered" });
+    if (accountNumberInUse(data.users, "passportNumber", passportNumber)) return send(response, 409, { error: "That passport number is already registered" });
+    if (isMinor(dateOfBirth) && (!String(body.guardianName || "").trim() || !String(body.guardianPhone || "").trim())) {
+      return send(response, 400, { error: "Guardian name and phone number are required for learners under 18" });
+    }
+    if (!String(body.highestQualification || "").trim() || !String(body.lastSchool || "").trim()) return send(response, 400, { error: "Enter your highest qualification and most recent school" });
+    if (!body.agreement || !String(body.recoveryQuestion || "").trim() || !String(body.recoveryAnswer || "").trim()) return send(response, 400, { error: "Complete the recovery details and accept the registration agreement" });
     const selectedProgramme = data.courses.find(course => courseNameKey(course.title) === courseNameKey(body.course));
     if (!selectedProgramme) return send(response, 400, { error: "Choose one of the available certificate programmes" });
+    const documents = Array.isArray(body.documents) ? body.documents : [];
+    if (documents.filter(document => document.kind === "identity").length !== 1 || documents.filter(document => document.kind === "qualification").length !== 1 || documents.length > 3) {
+      return send(response, 400, { error: "Upload one identity document and one academic qualification document" });
+    }
+    const storedDocuments = [
+      parseApplicationDocument(documents.find(document => document.kind === "identity"), "identity"),
+      parseApplicationDocument(documents.find(document => document.kind === "qualification"), "qualification")
+    ];
+    if (documents.some(document => document.kind === "additional")) storedDocuments.push(parseApplicationDocument(documents.find(document => document.kind === "additional"), "additional"));
 
+    const now = new Date().toISOString();
     const { salt, hash } = hashPassword(password);
     const learner = {
-      id: crypto.randomUUID(), name: String(body.name).trim(), username, email, role: "learner", avatar: String(body.name).trim().split(/\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase(),
+      id: crypto.randomUUID(), name, firstName, surname, username, email, role: "learner",
+      avatar: name.split(/\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase(),
       status: "Pending", passwordSalt: salt, passwordHash: hash,
-      identityNumber: body.identityNumber || "", passportNumber: body.passportNumber || "", dateOfBirth: body.dateOfBirth || "", gender: body.gender || "", phone: body.phone || "", lastSchool: body.lastSchool || "", recoveryQuestion: body.recoveryQuestion || "", moduleProgress: {},
-      recoveryAnswerHash: crypto.createHash("sha256").update(String(body.recoveryAnswer || "").trim().toLowerCase()).digest("hex"), selectedCourse: selectedProgramme.title
+      identityNumber, passportNumber, dateOfBirth, phone, lastSchool: String(body.lastSchool).trim(),
+      gender: String(body.gender),
+      highestQualification: String(body.highestQualification).trim(), residenceAddress: String(body.residenceAddress || "").trim(),
+      guardianName: String(body.guardianName || "").trim(), guardianPhone: String(body.guardianPhone || "").trim(),
+      recoveryQuestion: String(body.recoveryQuestion).trim(),
+      recoveryAnswerHash: crypto.createHash("sha256").update(String(body.recoveryAnswer).trim().toLowerCase()).digest("hex"),
+      moduleProgress: {}, selectedCourse: selectedProgramme.title, createdAt: now
+    };
+    const application = {
+      id: crypto.randomUUID(), referenceNumber: createApplicationReference(data.program_applications),
+      userId: learner.id, course: learner.selectedCourse, courseId: selectedProgramme.id,
+      status: "pending", submittedAt: now, reviewedBy: null, reviewedAt: null, reviewNote: "",
+      notificationStatus: { inApp: "pending", email: "not_configured" }, documents: storedDocuments,
+      highestQualification: learner.highestQualification, lastSchool: learner.lastSchool,
+      residenceAddress: learner.residenceAddress, guardianName: learner.guardianName, guardianPhone: learner.guardianPhone
     };
     data.users.push(learner);
-    if (selectedProgramme) data.enrollments.push({ userId: learner.id, courseId: selectedProgramme.id });
-    data.program_applications.push({ id: crypto.randomUUID(), userId: learner.id, course: learner.selectedCourse, status: "pending", submittedAt: new Date().toISOString() });
-    recordActivity(data, learner, `Registered for ${learner.selectedCourse}`, data.users.filter(item => item.role === "admin").map(item => item.id));
+    data.program_applications.push(application);
+    recordActivity(data, learner, `Submitted enrolment application ${application.referenceNumber} for ${learner.selectedCourse}`, data.users.filter(item => item.role === "admin").map(item => item.id));
     saveData(data);
-    return send(response, 201, { pendingApproval: true, user: publicUser(learner), message: "Learner application submitted and waiting for admin approval." });
+    return send(response, 201, {
+      pendingApproval: true,
+      applicationReference: application.referenceNumber,
+      submittedAt: application.submittedAt,
+      message: "Your profile and enrolment application have been submitted successfully. Your application is awaiting administrator review."
+    });
   }
 
   if (request.method === "POST" && route === "/api/auth/recover") {
@@ -641,37 +761,156 @@ async function handleRequest(request, response) {
   if (request.method === "POST" && route === "/api/auth/track") {
     const body = await readBody(request);
     const identifier = String(body.identifier || "").trim();
-    if (!identifier) return send(response, 400, { error: "Enter an email address or ID number to track your application" });
-    const query = identifier.toLowerCase();
-    const account = data.users.find(item =>
-      item.role === "learner" && (
-        loginKey(item.email) === query ||
-        loginKey(item.identityNumber || "") === query ||
-        loginKey(item.passportNumber || "") === query
-      )
-    );
-    if (!account) return send(response, 404, { error: "No active application was found for that email address or identifier" });
-    const application = data.program_applications.find(app => app.userId === account.id) || {
-      id: crypto.randomUUID(),
-      userId: account.id,
-      course: account.selectedCourse || "—",
-      status: account.status === "Pending" ? "pending" : account.status === "Rejected" ? "rejected" : account.status === "Active" ? "approved" : "pending",
-      submittedAt: account.lastLogin || new Date().toISOString()
-    };
+    const password = String(body.password || "");
+    if (!identifier || !password) return send(response, 400, { error: "Enter your application identifier and account password" });
+    const normalizedIdentifier = loginKey(identifier);
+    const referenceMatch = data.program_applications.find(application => loginKey(application.referenceNumber) === normalizedIdentifier);
+    const account = referenceMatch
+      ? data.users.find(item => item.id === referenceMatch.userId && item.role === "learner")
+      : data.users.find(item => item.role === "learner" && (
+        loginKey(item.email) === normalizedIdentifier ||
+        loginKey(item.identityNumber || "") === normalizedIdentifier ||
+        loginKey(item.passportNumber || "") === normalizedIdentifier
+      ));
+    const storedApplication = account && data.program_applications.find(application => application.userId === account.id);
+    const suppliedHash = account?.passwordSalt ? hashPassword(password, account.passwordSalt).hash : "";
+    const suppliedBuffer = Buffer.from(suppliedHash, "hex");
+    const storedBuffer = Buffer.from(account?.passwordHash || "", "hex");
+    if (!account || !storedApplication || suppliedBuffer.length !== storedBuffer.length || !storedBuffer.length || !crypto.timingSafeEqual(suppliedBuffer, storedBuffer)) {
+      return send(response, 401, { error: "The application identifier or password could not be verified" });
+    }
+    const needsReference = !storedApplication.referenceNumber;
+    if (needsReference) storedApplication.referenceNumber = createApplicationReference(data.program_applications);
+    const statusLabels = { pending: "Pending Admin Approval", approved: "Approved", rejected: "Rejected" };
+    const status = statusLabels[storedApplication.status] || "Pending Admin Approval";
+    const nextStep = status === "Approved"
+      ? "Your enrolment application has been approved. Sign in to continue to your learner dashboard."
+      : status === "Rejected"
+        ? "Review the administrator feedback below or contact Chimera Learning for assistance."
+        : "Your application is awaiting administrator review. You will be notified when a decision is made.";
+    if (needsReference) saveData(data);
     return send(response, 200, {
       application: {
-        id: application.id,
-        userId: account.id,
-        email: account.email,
-        status: application.status === "approved" ? "Approved" : application.status === "rejected" ? "Rejected" : application.status === "pending" ? "Pending" : String(account.status || "Pending"),
-        course: application.course || account.selectedCourse || "—",
-        submittedAt: application.submittedAt || new Date().toISOString(),
-        selectedCourse: account.selectedCourse || application.course || "—"
+        referenceNumber: storedApplication.referenceNumber,
+        status,
+        course: storedApplication.course || account.selectedCourse || "—",
+        submittedAt: storedApplication.submittedAt || null,
+        reviewNote: storedApplication.reviewNote || "",
+        nextStep
       }
     });
   }
 
   if (!user) return send(response, 401, { error: "Unauthorized" });
+  if (user.role === "learner" && user.status !== "Active") return send(response, 403, { error: "Your learner account is not approved for dashboard access yet" });
+  if (route === "/api/admin/applications" && request.method === "GET") {
+    if (!requireRole(user, ["admin"])) return send(response, 403, { error: "Forbidden" });
+    const applications = (data.program_applications || []).slice().sort((left, right) => String(right.submittedAt || "").localeCompare(String(left.submittedAt || ""))).map(application => {
+      const learner = data.users.find(account => account.id === application.userId);
+      return {
+        id: application.id,
+        referenceNumber: application.referenceNumber || "Legacy application",
+        name: learner?.name || "Unknown learner",
+        email: learner?.email || "",
+        course: application.course || learner?.selectedCourse || "—",
+        status: application.status || "pending",
+        submittedAt: application.submittedAt || null,
+        documentCount: Array.isArray(application.documents) ? application.documents.length : 0
+      };
+    });
+    return send(response, 200, applications);
+  }
+  const applicationDocumentMatch = route.match(/^\/api\/admin\/applications\/([^/]+)\/documents\/([^/]+)$/);
+  if (applicationDocumentMatch && request.method === "GET") {
+    if (!requireRole(user, ["admin"])) return send(response, 403, { error: "Forbidden" });
+    const application = (data.program_applications || []).find(item => item.id === applicationDocumentMatch[1]);
+    const document = application?.documents?.find(item => item.id === applicationDocumentMatch[2]);
+    if (!document) return send(response, 404, { error: "Application document not found" });
+    const bytes = Buffer.from(document.contentBase64 || "", "base64");
+    const filename = String(document.filename || "application-document").replace(/[^A-Za-z0-9._-]/g, "_");
+    response.writeHead(200, {
+      "Content-Type": document.fileType,
+      "Content-Length": bytes.length,
+      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff"
+    });
+    return response.end(bytes);
+  }
+  const applicationDetailMatch = route.match(/^\/api\/admin\/applications\/([^/]+)$/);
+  if (applicationDetailMatch && request.method === "GET") {
+    if (!requireRole(user, ["admin"])) return send(response, 403, { error: "Forbidden" });
+    const application = (data.program_applications || []).find(item => item.id === applicationDetailMatch[1]);
+    if (!application) return send(response, 404, { error: "Application not found" });
+    const learner = data.users.find(account => account.id === application.userId);
+    if (!learner) return send(response, 404, { error: "Applicant account not found" });
+    return send(response, 200, {
+      application: {
+        id: application.id,
+        referenceNumber: application.referenceNumber || "Legacy application",
+        status: application.status || "pending",
+        course: application.course || learner.selectedCourse || "—",
+        submittedAt: application.submittedAt || null,
+        reviewedAt: application.reviewedAt || null,
+        reviewNote: application.reviewNote || "",
+        documents: (application.documents || []).map(({ id, kind, filename, fileType, fileSize }) => ({ id, kind, filename, fileType, fileSize }))
+      },
+      learner: {
+        id: learner.id,
+        firstName: learner.firstName || learner.name.split(/\s+/)[0],
+        surname: learner.surname || learner.name.split(/\s+/).slice(1).join(" "),
+        email: learner.email,
+        identityNumber: learner.identityNumber || "",
+        passportNumber: learner.passportNumber || "",
+        dateOfBirth: learner.dateOfBirth || "",
+        phone: learner.phone || "",
+        highestQualification: application.highestQualification || learner.highestQualification || "",
+        lastSchool: application.lastSchool || learner.lastSchool || "",
+        residenceAddress: application.residenceAddress || learner.residenceAddress || "",
+        guardianName: application.guardianName || learner.guardianName || "",
+        guardianPhone: application.guardianPhone || learner.guardianPhone || ""
+      }
+    });
+  }
+  const applicationDecisionMatch = route.match(/^\/api\/admin\/applications\/([^/]+)\/decision$/);
+  if (applicationDecisionMatch && request.method === "POST") {
+    if (!requireRole(user, ["admin"])) return send(response, 403, { error: "Forbidden" });
+    const body = await readBody(request, 16 * 1024);
+    const application = (data.program_applications || []).find(item => item.id === applicationDecisionMatch[1]);
+    if (!application) return send(response, 404, { error: "Application not found" });
+    if (application.status !== "pending") return send(response, 409, { error: "This application has already been reviewed" });
+    const decision = String(body.decision || "");
+    const reviewNote = String(body.feedback || "").trim().slice(0, 1000);
+    if (!["approved", "rejected"].includes(decision)) return send(response, 400, { error: "Choose approve or reject" });
+    if (decision === "rejected" && reviewNote.length < 4) return send(response, 400, { error: "Enter a reason before rejecting this application" });
+    const learner = data.users.find(account => account.id === application.userId);
+    if (!learner) return send(response, 404, { error: "Applicant account not found" });
+    const reviewedAt = new Date().toISOString();
+    application.status = decision;
+    application.reviewedBy = user.id;
+    application.reviewedAt = reviewedAt;
+    application.reviewNote = reviewNote;
+    application.notificationStatus = { inApp: "sent", email: "not_configured" };
+    if (decision === "approved") {
+      learner.status = "Active";
+      const course = data.courses.find(item => item.id === application.courseId || courseNameKey(item.title) === courseNameKey(application.course));
+      if (course && !data.enrollments.some(enrollment => enrollment.userId === learner.id && enrollment.courseId === course.id)) {
+        data.enrollments.push({ userId: learner.id, courseId: course.id, status: "active", enrolledAt: reviewedAt, managedBy: user.id });
+      }
+    } else {
+      learner.status = "Rejected";
+    }
+    const message = decision === "approved"
+      ? `Your application ${application.referenceNumber} for ${application.course} has been approved. Sign in to continue to your learner dashboard.`
+      : `Your application ${application.referenceNumber} was not approved. Administrator feedback: ${reviewNote}`;
+    notify(data, learner.id, decision === "approved" ? "Enrolment application approved" : "Enrolment application decision", message, "application");
+    recordActivity(data, user, `${decision === "approved" ? "Approved" : "Rejected"} application ${application.referenceNumber} for ${learner.email}`);
+    saveData(data);
+    return send(response, 200, {
+      application: { id: application.id, referenceNumber: application.referenceNumber, status: application.status, reviewedAt },
+      notifications: { inApp: "sent", email: "not_configured" }
+    });
+  }
   if (request.method === "GET" && route === "/api/me") {
     const account = data.users.find(item => item.id === user.id);
     return send(response, 200, profileUser(account));
@@ -868,6 +1107,9 @@ async function handleRequest(request, response) {
     const body = await readBody(request), account = data.users.find(u => u.id === body.userId);
     if (!account) return send(response, 404, { error: "User not found" });
     const nextStatus = ["Active", "Inactive", "Pending", "Rejected"].includes(String(body.status || "")) ? String(body.status) : (body.active ? "Active" : "Inactive");
+    if (account.role === "learner" && account.status === "Pending" && ["Active", "Rejected"].includes(nextStatus)) {
+      return send(response, 409, { error: "Pending learner applications must be decided from the admissions review screen" });
+    }
     account.status = nextStatus;
     recordActivity(data, user, `${nextStatus === "Active" ? "Approved" : nextStatus === "Rejected" ? "Rejected" : nextStatus === "Pending" ? "Set pending" : "Deactivated"} learner/account ${account.email}`, [account.id]); saveData(data);
     return send(response, 200, publicUser(account));
