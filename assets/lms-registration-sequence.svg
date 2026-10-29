@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1280" role="img" aria-labelledby="title desc">
+  <title id="title">Learner registration sequence</title>
+  <desc id="desc">Registration moves from the learner and browser form to the Node API, which validates and hashes the password, writes the account to Supabase users and related state to lms_state, then returns a token and profile to the browser.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#526b8a"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#17263c}.title{font-size:30px;font-weight:700}.sub{font-size:15px;fill:#64748b}.lane{font-size:17px;font-weight:700;fill:#fff}.step{font-size:14px;font-weight:600}.body{font-size:13px;fill:#53647a}.small{font-size:12px;fill:#61728a}.box{stroke-width:2}.browser{fill:#edf3ff;stroke:#8baaf0}.api{fill:#f3efff;stroke:#b19aee}.db{fill:#e9f8f1;stroke:#7bcca4}.state{fill:#fff6df;stroke:#e3be61}.flow{fill:none;stroke:#526b8a;stroke-width:2.6;marker-end:url(#arrow)}.return{fill:none;stroke:#4b9b78;stroke-width:2.6;stroke-dasharray:8 6;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1400" height="1280" rx="24" fill="#f5f7fb"/>
+  <text x="48" y="58" class="title">Learner registration · request and response</text>
+  <text x="48" y="88" class="sub">Supabase mode shown. Local mode writes the same LMS state to backend/data.json.</text>
+  <rect x="40" y="122" width="1320" height="72" rx="16" fill="#172a43"/>
+  <text x="78" y="166" class="lane">Learner</text><text x="354" y="166" class="lane">Browser · app.js</text><text x="700" y="166" class="lane">Node API · server.js</text><text x="1104" y="166" class="lane">Supabase</text>
+  <path d="M300 206v1040M650 206v1040M1050 206v1040" stroke="#d4dce8" stroke-width="2" stroke-dasharray="6 8"/>
+
+  <rect x="65" y="220" width="210" height="68" rx="12" class="box browser"/><text x="84" y="247" class="step">1 · Enter details</text><text x="84" y="270" class="body">Identity, email, password</text>
+  <path d="M170 288v38H390" class="flow"/>
+  <rect x="390" y="326" width="220" height="75" rx="12" class="box browser"/><text x="410" y="354" class="step">2 · Client checks</text><text x="410" y="378" class="body">Required fields and formats</text>
+  <path d="M610 363h82" class="flow"/>
+  <rect x="692" y="326" width="300" height="75" rx="12" class="box api"/><text x="714" y="354" class="step">3 · POST /api/auth/register</text><text x="714" y="378" class="body">JSON body; server validates again</text>
+  <path d="M842 401v50h290" class="flow"/>
+  <rect x="1080" y="451" width="244" height="72" rx="12" class="box db"/><text x="1100" y="479" class="step">4 · Read current data</text><text x="1100" y="502" class="body">public.users + lms_state</text>
+  <path d="M1080 487H992v77" class="return"/>
+  <rect x="692" y="564" width="300" height="100" rx="12" class="box api"/><text x="714" y="592" class="step">5 · Validate and prepare</text><text x="714" y="616" class="body">Uniqueness, programme, agreement</text><text x="714" y="639" class="body">scrypt hash + new account ID</text>
+  <path d="M842 664v46h290" class="flow"/>
+  <rect x="1080" y="710" width="244" height="92" rx="12" class="box db"/><text x="1100" y="738" class="step">6 · Write account</text><text x="1100" y="762" class="body">Upsert public.users</text><text x="1100" y="784" class="small">Fields + attributes JSONB</text>
+  <path d="M1080 756H992v86" class="return"/>
+  <rect x="692" y="842" width="300" height="82" rx="12" class="box state"/><text x="714" y="870" class="step">7 · Write workflow state</text><text x="714" y="894" class="body">Enrollment, application, audit, notices</text><text x="714" y="914" class="small">State row uses a revision check</text>
+  <path d="M842 924v36h290" class="flow"/>
+  <rect x="1080" y="960" width="244" height="68" rx="12" class="box state"/><text x="1100" y="988" class="step">8 · Commit lms_state</text><text x="1100" y="1011" class="small">User rows are stored separately</text>
+  <path d="M1080 994H1016v-111H994" class="return"/>
+  <path d="M692 883H620v220H610" class="return"/>
+  <rect x="390" y="1067" width="220" height="75" rx="12" class="box browser"/><text x="410" y="1095" class="step">9 · Receive response</text><text x="410" y="1119" class="body">Signed token + public profile</text>
+  <path d="M390 1104H170v58" class="return"/>
+  <rect x="65" y="1162" width="210" height="68" rx="12" fill="#e9f8f1" stroke="#7bcca4" stroke-width="2"/><text x="84" y="1189" class="step">10 · Open dashboard</text><text x="84" y="1212" class="body">Store token; load protected data</text>
+  <text x="692" y="1212" class="small">The user and LMS-state writes are separate REST requests, not one database transaction.</text>
+</svg>

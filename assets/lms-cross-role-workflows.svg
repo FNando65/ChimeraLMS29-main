@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Chimera LMS cross-role workflows</title>
+  <desc id="desc">Two workflow lanes show a lecturer submitting a course for admin approval before learners can see it, and a learner submitting an assignment for lecturer grading before feedback is sent back.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#526b8a"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#17263c}.title{font-size:30px;font-weight:700}.sub{font-size:15px;fill:#64748b}.rowtitle{font-size:16px;font-weight:700;fill:#fff}.step{font-size:14px;font-weight:700}.body{font-size:13px;fill:#53647a}.small{font-size:12px;fill:#64748b}.box{stroke-width:2}.lecturer{fill:#f3efff;stroke:#b19aee}.admin{fill:#fff6df;stroke:#e3be61}.learner{fill:#edf3ff;stroke:#8baaf0}.system{fill:#e9f8f1;stroke:#7bcca4}.line{fill:none;stroke:#526b8a;stroke-width:3;marker-end:url(#arrow)}.notify{fill:none;stroke:#4b9b78;stroke-width:2.8;stroke-dasharray:8 6;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1400" height="900" rx="24" fill="#f5f7fb"/>
+  <text x="48" y="58" class="title">Cross-role interaction workflows</text>
+  <text x="48" y="88" class="sub">The server is the coordination point: it checks role and ownership, changes state, and notifies affected accounts.</text>
+
+  <rect x="40" y="122" width="1320" height="64" rx="15" fill="#253b5a"/><text x="68" y="162" class="rowtitle">A · Course publication and approval</text>
+  <rect x="54" y="224" width="250" height="116" rx="15" class="box lecturer"/><text x="76" y="256" class="step">Lecturer</text><text x="76" y="282" class="body">Creates course and submits</text><text x="76" y="305" class="body">for approval</text>
+  <path d="M304 282h62" class="line"/>
+  <rect x="366" y="224" width="260" height="116" rx="15" class="box system"/><text x="388" y="256" class="step">API · pending course</text><text x="388" y="282" class="body">Writes course + audit event</text><text x="388" y="305" class="body">Notifies admins</text>
+  <path d="M626 282h62" class="line"/>
+  <rect x="688" y="224" width="250" height="116" rx="15" class="box admin"/><text x="710" y="256" class="step">Admin</text><text x="710" y="282" class="body">Reviews, approves, or rejects</text><text x="710" y="305" class="body">the pending course</text>
+  <path d="M938 282h62" class="line"/>
+  <rect x="1000" y="224" width="300" height="116" rx="15" class="box system"/><text x="1022" y="256" class="step">API · update and notify</text><text x="1022" y="282" class="body">Records decision and notifies</text><text x="1022" y="305" class="body">the lecturer</text>
+  <path d="M1150 340v48H428v-48" class="notify"/>
+  <text x="663" y="380" class="small">On approval, active course becomes catalogue-visible</text>
+  <path d="M1150 340v82" class="line"/>
+  <rect x="1000" y="422" width="300" height="84" rx="15" class="box learner"/><text x="1022" y="454" class="step">Learner catalogue</text><text x="1022" y="480" class="body">Shows active / approved courses</text>
+
+  <rect x="40" y="548" width="1320" height="64" rx="15" fill="#253b5a"/><text x="68" y="588" class="rowtitle">B · Assignment submission and grading</text>
+  <rect x="54" y="650" width="250" height="116" rx="15" class="box learner"/><text x="76" y="682" class="step">Learner</text><text x="76" y="708" class="body">Submits assignment or quiz</text><text x="76" y="731" class="body">for an enrolled course</text>
+  <path d="M304 708h62" class="line"/>
+  <rect x="366" y="650" width="260" height="116" rx="15" class="box system"/><text x="388" y="682" class="step">API · submission</text><text x="388" y="708" class="body">Stores submission and audit</text><text x="388" y="731" class="body">Notifies assigned lecturer</text>
+  <path d="M626 708h62" class="line"/>
+  <rect x="688" y="650" width="250" height="116" rx="15" class="box lecturer"/><text x="710" y="682" class="step">Lecturer</text><text x="710" y="708" class="body">Sees grading queue; adds</text><text x="710" y="731" class="body">score and feedback</text>
+  <path d="M938 708h62" class="line"/>
+  <rect x="1000" y="650" width="300" height="116" rx="15" class="box system"/><text x="1022" y="682" class="step">API · graded result</text><text x="1022" y="708" class="body">Updates submission and audit</text><text x="1022" y="731" class="body">Notifies the learner</text>
+  <path d="M1150 766v62H170v-62" class="notify"/>
+  <text x="608" y="820" class="small">Learner sees the grade and feedback in the dashboard</text>
+  <rect x="54" y="842" width="1246" height="34" rx="10" fill="#fff" stroke="#d8e1ee" stroke-width="1.5"/>
+  <text x="76" y="865" class="small">Important actions also write activity records. Notifications are recipient-scoped and support unread counts and mark-as-read.</text>
+</svg>

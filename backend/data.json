@@ -1,0 +1,1549 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Elsa Snowiie",
+      "email": "elsasnowiie@gmail.com",
+      "role": "learner",
+      "avatar": "ES",
+      "status": "Active",
+      "lastLogin": "2026-10-26T08:16:42.344Z",
+      "identityNumber": "",
+      "passportNumber": "",
+      "dateOfBirth": "",
+      "gender": "",
+      "phone": "",
+      "lastSchool": "",
+      "selectedCourse": "Data Science Practitioner",
+      "passwordSalt": "a7a7bbeab9257aed174dc188f8bf080d",
+      "passwordHash": "bc0093d1ee4754024cd93ed95a8de61de8c19691314ac054c6c0f305d2efbb8cc97de19fb8d86deef0be35be976f3e212cd8cbdcad4263fb5b2297900bf3b939"
+    },
+    {
+      "id": "u2",
+      "name": "Dr. Sarah Chen",
+      "email": "s.chen@faculty.edu",
+      "role": "lecturer",
+      "avatar": "SC",
+      "status": "Active",
+      "lastLogin": "2026-10-26T12:39:39.075Z",
+      "passwordSalt": "20e74d96264d1d56f7dd47fa58539da6",
+      "passwordHash": "7342808a855e46e2bff5d60a5e4917861058f56d4d903ee9fff89a6fc2770d0f68e6caeebc46d55449124e192f92afe718da0900e02e5fd6e8a4d4b36062a8ba"
+    },
+    {
+      "id": "u3",
+      "name": "Marcus Rivera",
+      "email": "m.rivera@admin.edu",
+      "role": "admin",
+      "avatar": "MR",
+      "status": "Active",
+      "lastLogin": "2026-10-26T12:48:43.773Z",
+      "passwordSalt": "647b7e78fa10c1855ba04cf4da1676c6",
+      "passwordHash": "b988aba2abf3233b3ad3aea3bf99132aa570ba4069443a202b9ff63ca4a9aef2217913b39f4aeb592656813afbf58b463434a1311112ad55e178720025c848e9",
+      "identityNumber": "",
+      "passportNumber": "",
+      "dateOfBirth": "",
+      "gender": "",
+      "phone": "",
+      "lastSchool": "",
+      "profileImage": "data:image/webp;base64,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"
+    },
+    {
+      "id": "u4",
+      "name": "Priya Patel",
+      "email": "p.patel@student.edu",
+      "role": "learner",
+      "avatar": "PP",
+      "status": "Active",
+      "demo": true
+    },
+    {
+      "id": "db17fbfe-c03c-4376-bc23-5302371953cd",
+      "name": "Phiwa Mthethwa",
+      "email": "phiwamthethwa431@gmail.com",
+      "role": "learner",
+      "avatar": "PM",
+      "status": "Active",
+      "passwordSalt": "67fdb3726a5417a25b96681c2cdc40bf",
+      "passwordHash": "0bf5ee35b54a1041b915842499225a70327ccb249d3ad0758f62c27956c6c53ccd1362ce6b80e4f1b583eb72d32831f7e116b2ea163a5865972dc9609168c60a",
+      "identityNumber": "0007295879089",
+      "passportNumber": "",
+      "dateOfBirth": "2000-08-05",
+      "gender": "male",
+      "phone": "+27698501397",
+      "lastSchool": "Khwezi H",
+      "recoveryQuestion": "What was the name of your first school?",
+      "recoveryAnswerHash": "d713a7e4d280683a32c7f39cfade58bbd424b9f04e542477e5dc7ba60608821d",
+      "selectedCourse": "Software Developer",
+      "lastLogin": "2026-10-20T10:23:43.180Z",
+      "profileImage": "data:image/webp;base64,UklGRvAVAABXRUJQVlA4IOQVAABwZgCdASqaAeoAPp1KoEulpCMhpNWKuLATiWRu4W3A5uK/3fuXva+Z85Dk3sv9ufZfM73ZdSeV7y//2P8b7a/8V/vPYn/Xv9X7Av9k/vvSV/cn1Cfs7+zPuxf8T9uPeH/Vf977A384/3HWy+g9+5fpy/uV8Pn9b/5H7m+1r//9ZC+tf1vs/8B/L582k1ODepf8t/EX8v2HdkfALdR2hHenzwJlOQB5i97t9/9QnyjP9byu/X/BNIcuwT04MCb7yXF7bqulU7vaLeZHGQxiNAvTnVUEuF//jxqSCXC/jwrRqu4KwZTGgDLj8W4gXPHdd+enLqdwDTRN3HhmvKU2FNJJNo04/o9szd6TWNq+Kr/kQ/7KvVOhFGMky38phHKdaWhlJHafEpkkdc4oups3i2KYXehDqA4+dJO9ySjGSZb+Pv/cgthouU3HWY3lA1ocsb/mkcOlnh0u/S5+W+h5TU98fjGSZb+Pv/cih2hdQviK1F26TfEYtOdNSVb0HQ7ve/0CMhZ6TZ05YHj8YyTLfx9/7kUPLt+Z99wdceoVOLa3UcnpqXwRyjqYNR6gdCLCEHacjJd2JeJ0Cw1N7Po5itLRZ7ccSnhjyA4KLJAoDjjvYdh9CAeLbZmx05cEzG50GJTrkvx0x6Hs+m7YUHpa+X6eonGDqpttY5jrSOEHnhEdVpC7zRxzwDTK0sAux3dH8YXN47syoHep+g/spKZFFscq/KXO/AvzzCI62fH2E1f4XXcG+eQaGUhYd15iVWedvjk48bY4PbAZ/SdoHZCAyZ7KoF/Ow7w8ExkF23SjfvtSPOuG8EksFgzgW9rAHIxUYPPuBLTMYorEyJfnnfg+xLoQmjDGNrX2T6/tuLYHRIhYhbIOL2G6YPcZu0/bMa2IwPaLQeeHyxZql+N6FXYDBVa0OVQCx3qyt1gN7umQLosx+uU7caeugOVWvHARjhWswil8YyTLfjYmuGOjmPE2+AC1RLGXmzWgMw5cUvjGSZb+JmpfmBop0UpDC4uvwdGc32QGZb+Pv8ff4mal+G6/i963ik3MNTVlGSOO93wc1j9Ycx4TCXoBA9G92zqqCUvQxGgXpzqqCXC//x41HsAA/qt+XA8njGQwsG/YLVn+MHWDb7C8yx+NkIm/hY/sPeDGX9q1AmR2k2dwYvItfVSlS+mvjsphf2yZttYLrNroeN+R5MNpQMSEKZ7WRicIwnN5+1PYL2QyoaDqNGyMPvfFE7fyee0RvEvGqHKXL5AmbOLLg7NL24m1ZlgoX2HbmLPZCJ2JEtLFQ+/MtLurtLk3A71Eof6gDTpfC7FDhuOphy29I5xtzhiCloLIYoX1IisFbQusGmZ9+rI5icAgFmbNB6EUFgCuoTKGJjx6oqHDTXdmlfCiWpL7rAuaVMzk76m9r416cE19KxhRdoExZ2fyyg1X2mEalKeC3c4CH9sL0t1iWqSixW15d2vfYJQCh4qaNocu5/4BSxCfk7UZzmV6TZXauIn4BLD22GM7oTQ9QioMuHLxqv/4ptcfI1ukt4SiyOUZoxaVrWgvoQ2jewM8hLlWtHUVzUN6s10H+2GPt/OP1rRUd5QfW9QBcFo3My4B1kVf1YAtLe7wTc5hHUQX8w/oMoeemQgd+2VwCKMMmSZdGHADztRk5zPV1IWqHopmP/4xOON5RfdOzLT5YVEQqzR/l82CO0GLyyokx9fnLdX7oy3dH2vE6md8pRCQwnrIHmahabw5Go1gcw0b4uB268t0GFzHPQ8Z6OAPZATuCvMIGBTmqWIRYdnrjL4TmgpU9ybUR0cke68SAskgcBUBwwr4ussU/c86Izmzpav+qgsZU6EKbleSRHNbmce1OWuj9ft6T0my6q+7A/fmnUiCvnkh2uTtPvplVsvD8d4DoDhO+ObibKGarOhqohAAAAB3g784i0sdGuG1RE8X4HY7YC/9wyZJuRB3p7Hfl8GR0GlNFCe6XJCMJUzkPslOoasZ9xbsRLh/ZGeon+xPSCRMM1UyzPq5QmvQE3+Ck2fn5sedTKgDAzxmZ9snKIFLaprC/m1omw7THKJZASBOchitHxXnMRD9ewX0QOG4i4ESC/CDhtDkYXTOjLU++NDNvatVejL9V7xBfLt6G9gd3+HgJdwLr8yH63SYNHlIqFpWqOChQxq5rLw8A+HaH1a7qmtXGovO1WKiN+Dq8SSOHZVnbX9fDoF1GoQbhEBWzORckkJwKatH4nV0voAVa5mx7T5op/P6Ii8XYMEHNmN08reCdvRVTddTZY8Ryxo8w0iszQ9y8svBL+p+iB+O75qC8SZSqs82oQV9IcACxZwaa1acZ63k/FTQCGpcc9FwOZO4iP4CtGq62uh/3xF6vNF++Cv/UvVJxVwPOWyTttMBPsc9bJD1PDK6abtJlIeO0oKzTjMA+qaVIqkuZQMQtM3jIbpaqWMW24tnCJL3/EsuIOEBu5xMKU7WEfAjFD6i24RNZc1F0YpLx9RzkKo40KC2D2bJTfWVB0M7Y4taTaIrYvlKIGKV38w3CZy6tqE/UgoLFXYN/RhKMmelO/vVYwA0MI8fViu+99jTJJFBs8XB7x6i/HLbR0DAm27fJUNYOsw/L0UAuhvaCFAVYVCodU7V6R+nWYezSZLQdbNBS+kSiIRZhgMwd7149qKGHPHNZFH/vmUD991m+LB4vGiIBVhvVOzfgM5bcTE7tgJ2VTwJobWR9IBFn8nWhqVyxLuAje6xrgRbiDYUPsy1E2v2VjhMESh1WB0/HBpTxKlABzJg4Ts+fmQTyy7TpeOne4/OtiekYeQ0SfqELYt+v9ox6zsAXAT9z0jbCwvmJDZ5gdT4ThvganvJigDL8EFbJ9zRukkpEAEUH3+U4k101Errp0peGFNqudCNeivk3hHoKl7xA4EfWW7ILY6WHyYgy6L10r20uDwO2sRVOvRWchNeRxuNG9S0wSGvKTL8QAGQAbEivGl8M0esqmSwU38quLeKegBcFdKYKDot2m36nn3JKA/T4sFvC6sCD1LXYhTgVUKR7UlO8r75+Gx/DU/b6l/uhQst7cM1+IenJl0GjfkZ7j49y/BQF5b2cjPor++uEwMuW+GBLUtWi+deix297ZAycw03KKJ68g+LFXL86A+LaHYe+eh1nWeQANyM44utUwkCp3h2TdhjRES9sK6RcbU7w3GlNZahKKi2eZXMhNd1jw8rca10yHtIIm488yjnIbDq4ibsgxDYau12MN54QvuKk23ym75QqY4rzyMYtOThyDiS2vUjsUcG813cVL1b2ChRlGivuvwSeU3+UzCJ+41Ds3EOcs3S+0uGMuZ/nppGKXWukZGYess5K1D0NEnWRd9rLkbCFi1QZuuiCwmfnWU8y3hU2WJSfQY7TfKVlMXQj6d6MHOZ9SbuIHFghQQVLUFij95/u4wqZcOvxaUduCaY6dSLfFV3ahEZKLL3D/YIdhoQDW/iRCI2mklzyVpXf4+kfB3J2wee2txFOJiB/CADzY9pZ/gZALqR63VnGMcpR/WVAksbslzsWAOGgKej2Y/WOwCHu/3p8490/O+EZDLKalijnF14aPC5YTlp/Deksh0+ayhL20u/PdtqmiJvkKwvDb7TotNbHcI0gFQNKedyWZtRt71i3WExs8Er64M75RoTcy2yGo0A0U8lfYyjqlGXX0F8AlPA1/Wf7mLb+4w/DUBGtwcfg3hlIq7GPgWfMglHsWV8QuzvY+uZwt2pIzpRn7N2nOpgpZNzI0U7/TLi3DfOhIa4OhKzy5hKvp0hay/OorIMbYR/DHS2SHE8h91MGy2CGoVHuOfX4tKYeKnrP1G6UZ+74bpoIcBdA2bQo8iL8yY4G8f/wJSX3jeQi6yRqT6wg/tbSQFKDY1hBrx6NPyk4GLJi9/dN3A2Tb5VsSsIF998HExCuX/dsD+UHTW0uNXO5Gmd+8HM0b9kmRpDiZA11Kmys9/EYIL41LzWx+kRvDxwjElHlYXf3nCGy2p75OpZ8RWJpJSlE1NrKCJHX+Lex8ECkrBNWh4PC0+k07ilfXKe+kGt7jDPNbj9HoV3MfJ0opjSjMP3h0ldqBwmdyU0n4hvJOZLNnATWhAaU5T1ULUZXjEBIm552cIOhDrD+ly5TTsFbLy7wTskcVxZnFxDu2zmBPYlYhaGGUigtsT0wvTQStF2Si5MFHAHLtmPgepAa6iMxjHkeqGN74STKqBBJq4UWch8TwCRFOO3vxBlne/unfESYzznt6t1qoL+2Lmb4VwCUukoLLIO70SaNDNt73xBMdQh8wplcVK3cgD4ypVb+s1VQ2KR+vf9+hPwcH3RIbKz80xLyneGY5w4xFey5DLi3n1X5z4wLIt1Sy2Q5xzSo1ohPjTgJ6ZMKrI8RF9hBN9RC0bPgJpvlhEJxLgJryfDKo9AxZW1x/D2PvqdrHI9PA+NDUhH+J3uKSMLAJqD5wwhDNIiBdrfV734JZh6t1U+KQncOui7U0eOvkCw+2RmAtsFLzUvhYTumdKjlefu54C18OSSVddAnW5BqZASkDDHu4//Hk9sl1FzhZk1rKwJeG2MSpoJJCaMNCEco5c1FEPny/tA82ZznPL7iiIzVJaQSBhZhnfI0haJf1hZRwDpMpboG34Fybq6S+CaPsBxAVC6U+HdD9PLvmMnWrFZ2O4SOqNTAxtVGx0IUOOFlkQPUYM3KNnqJ2q9KEEjQt1M4rgCuDYYHQjf8rvwU3+Ve3tjywzsNrEkB+nVYOEd82E7rpqgIBzAkqcQg4gUpTgnRpk+L5Fn/R3aZS3vQugkiH4z12ochbb1QnOfFJY9AW95HaSu8bkohrwhpBk0j7rpZws9a8Hn9Ftdv+UYI4R2BlLvij2k4rm1EZegg39sTVX4qccFM5B77c+rkkCI4Ngz28g2WMbAyZIA1yymzzoK+/6n4ufMVCVTEUvJkkxwDM5eH0dOvFEML64bAsNQln31vNpuux+3numwDn5iwVK9ZU0j8Kw9bOd0neA214TXliPThHmcaa0ClmwTC0X/cFs725cj2Q52wtIo7H23FJzZc+rlgbcgqiapS3G+Rem3b3cwCMI+hec8kzhy+t4AIFQdAsU+DbW/8Kx4ekCb6Q+5JOD0ZaIEaZgnf3nwBE6q4iusGRt605ZChTWcwCjf+H904HfjuWK3Ji9Pqh10lqfElamEUFYK6TcXwZfslZTr5H5mycxW8VUPEU+LbJjvgp7jZk+aD4T2CfLhRme0pO6AdlBsH1sOT26FDA+zwYWaRZgUYkp4zdF/H5DIUmP1fs5NXwA8Amhh/Mw5B2m+mXU6t0s51UOYN7nCcknn8lC9HqplD4ADvZX5E3mK9+8YRNmcvqVDPwAT80IDe35/2ZXSvm9/hTyynJhl5jq4pL5tEi7LiiShtNeAkFlzHhDpVqtWle/2A4C+gpWY/JDl2eMNYYjiNv2gYQqbG1mjnGN5TI9ZLIA+QakIq0kpu54zfDRtrIw4RZ9Uj/Fk4lyIGkVwnMURdERtdDGmh7cycSanRPzns/IMdD+Zkm2Cy/zuXhbCiTSss/cryB5CJN8LhqnwYa0t3gMgL5vkqGW77kDRaedwsXidMZLr64hRmFMtbUNpnWy+MgaGJIIGLzN77oFpTZ5K9mZE0xiJgETlzxeZlb+dQRtpONlluzQxNhSzI26cqDUxS0DeuG2NQFSny0c+poEZ637EFexPjdFb6fxbqK1/omD6TXskNP4QYCKMhl8fCSC/2rUVY0hHPRHv4LmII9BuD+x9iVD04nDvjbECTRZSEj3ECTjHzmI6o1v7iGQz7Ig2yim3j/yDYPDmNqLVwqNBPmVuZAjosKtxyp5MisyTh1YSyJWkDdYys4dQjlq1ZCuhGNZdOGSMZDcJIbqs3EHyAhDYlSFxDcQNG0IKSUwhXr6Dnqm2bBnjOXftzBy0fXb26gBIj31O2GN1l5dFdBNzy757qEZ2zbTjlS0O77uon024G/o++pE/zIXdYUudS9thXjjVDEbU9qL1CAV8EwcXzOpRpv8WV00woe4Nb50t9db3XUb3/TQLOocj1KWR3lQr+fayDjR2wuBBMGX59RTNULv/V8ZVgOn7RS3TXgu3YFD9H/xaiBk2iBKmHVnQ2szHNHbKWGUhuybp2uZg4ebzw3qVcjkeK+htCe0J9RTx8miXvZhAUY+zegVWODyT8PjQn+KU1vn78Rr34Ow8bVCOpghnnGr5SKLQnzLu9gYN5hW41vBTTBiXUtDuPdGDB52cmEgHvFIgXbU0G3LhXXr3BQMMe/+7FAyNXg9k24EDbDqWq/mIHLPNiZ40cW8lxbQOj1x6Tnp87fCKM8tEyDS47ZU4zUTKDW1pNYP8/3XwWWxFUfsMh0TeoJdE5Yhc819TVBAi0EkeyHT9oP+QwShtRcW+wxveQUsxY7oux2yunRgpq2xIw2D38z3KqHniGNJH0pO5NKnaH688pAVH0Q3t1mo1Q56XhSb/StDD/7Q1G/U82/SrnVaHQvtz5Nne0HE0bGg7PwAhzcUwVtrF/KG2W6GO9y1vLQAl5RsGNwmoOPhb8NgzWZ+bkC65pd/5mkDGc6oGWE9YiIdC04f0pY1rKrObj+9dkCePPxl2Esfs9ECQTSgCYcU4TomOMI7fnQW1sUDxqFf+EFGY1wgTv4PwAAAAAI5Gg4hvriovs9ya0BIfBPviDAGZBqYPNDwL2y4OMDfglpj9K2sjgigRgeLKyw28bQQwsik63QkgKaAQLiUbiX2GBfxHTG3EQke/u4kD41tHo6O6MrHAHxzXmn2d1itF2nTlkoWco0vM59mXByFm9dSlAexfZqQYY+7Lk+CIwQCmBM5YD2cpL06Lt3SIo5aApRT6PixypawqUuhk98i7JocEgONhX6ewhtTif9OywopCaZy2r4RBG0P/jFpDdycwN0mA8n/kGmoAAMXYfxGWZTUyhmxZ0nigeyZ9p2EOau69m5BLM1wXSieJe5bpGiN5Ckd5fxmo3ubHcKpmkdMZqORdIIeBD7jJ8SwzShvEZo8qw/TFCwLMG0TuY/rz2RlS9Uxhx2//pAC3U5pQzQdo/7EWyJ8lL2Dg3IJwKHpblr+WVhK2Yl8HIGuBh4QaeeHiEJ3fXrKpJNObOvQAeaK6m4AAWybLgPqfcFezaaMcq5/Hy9ud5OSu1tZvtx+Gcw4gjqdewhfLYAfWAHP9H2V3U0xCWN+hXE9kBsZf4CQ3HlfJodIW3hDmquLfa2u0l7K+xoNl1w4hnteQ9yF2HcvrJ3hW3x6mFIv94nHt8pP5OyIAcRtb0Dn8JTfhGgftpcoaxAAAJJHusYgNIoax1LxrEBhWwEYP7j3cNiddUmq+eR9NXRtuE5oJBam8u2wKPrmfuqDpw7lJiaPqwTlnJoAqdc5kgAAILcxzecQcNFF0AxBNWwttm2dO4umNQhvWv9iPXeO7p1qmAicfwYfNoKwHMGeHuWZy59NqwLeap6FSsWR/lLcA014FiunEgAwph6i8AAA=",
+      "moduleProgress": {
+        "cert-software-developer": {
+          "Knowledge Modules": {}
+        }
+      }
+    },
+    {
+      "id": "0690fe98-4809-4f32-9ae1-f8aed014d9fa",
+      "name": "mishack mashiane",
+      "username": "mishackkoki",
+      "email": "mishackkoki@gmail.com",
+      "role": "learner",
+      "avatar": "MM",
+      "status": "Active",
+      "passwordSalt": "ac696cd3362564815949f6e92ff67d98",
+      "passwordHash": "7c1e3053a53f30a9af3b8f3e6ed069c803d8fe268911e00ead40994dbcea9b40d8ba2bba3ee6cb0a814655a0bdd6839a2661e91825d4ea806a011e06d4084b40",
+      "identityNumber": "0004216055089",
+      "passportNumber": "",
+      "dateOfBirth": "2000-04-21",
+      "gender": "male",
+      "phone": "0796899273",
+      "lastSchool": "thogoa",
+      "recoveryQuestion": "What was the name of your first school?",
+      "recoveryAnswerHash": "b39e1e4511deb78e938625e761ec67d4749e7fcd104f1b73c0557ca7cbff74f6",
+      "selectedCourse": "Data Science Practitioner",
+      "lastLogin": "2026-10-26T12:44:02.309Z",
+      "moduleProgress": {
+        "cert-data-science": {
+          "Practical Skill Modules": {
+            "0": true,
+            "1": true,
+            "2": true,
+            "4": true,
+            "5": true,
+            "6": true,
+            "7": true
+          },
+          "Work Experience Modules": {
+            "2": true,
+            "3": true
+          },
+          "Knowledge Modules": {
+            "0": true,
+            "1": true,
+            "2": true,
+            "3": true,
+            "4": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "9": true
+          }
+        }
+      }
+    },
+    {
+      "id": "e6463868-3a57-454f-8423-4bf8413b45f9",
+      "name": "Christiaan Dhludhlu",
+      "username": "Chrisman442",
+      "email": "boikanyodhludhlu59@gmail.com",
+      "role": "learner",
+      "avatar": "CD",
+      "status": "Active",
+      "passwordSalt": "3564c295735c4ca8f8f180d956845dbe",
+      "passwordHash": "f2329d7be0c5a9d863819a10a19de4358ff7300766ac5327d9ab7738af598eb391aac7987049b475b37bbea41fd4aefab0b1ab1853f20ebac0ac062fcf0c12e2",
+      "identityNumber": "0412185138085",
+      "passportNumber": "",
+      "dateOfBirth": "2004-12-18",
+      "gender": "male",
+      "phone": "0678729968",
+      "lastSchool": "Noordgesig Secondary",
+      "recoveryQuestion": "What is the name of the town where you were born?",
+      "moduleProgress": {},
+      "recoveryAnswerHash": "8e42c362ee4a781480ad3479c279ca322bf0f502b6ab0b72948fc3004a7700f1",
+      "selectedCourse": "AI Software Developer"
+    },
+    {
+      "id": "b11d4e57-60c8-4a69-bdd4-b070f7aa94cb",
+      "name": "Phiwa Mthethwa",
+      "username": "Topdawg_Code7",
+      "email": "syabongaphiwayinkosi9@gmail.com",
+      "role": "learner",
+      "avatar": "PM",
+      "status": "Active",
+      "passwordSalt": "64e4cc6eead93954217a1a4df26cc6d3",
+      "passwordHash": "14e5615df49507a602ac12818b5f53fe61b93f5b362e91bfc337080e2e0a63ae95e714f2b94d651f840cc5f6a82657c5137cced2e951fec9bee9206afee37c8e",
+      "identityNumber": "0007295879089",
+      "passportNumber": "",
+      "dateOfBirth": "2000-07-29",
+      "gender": "male",
+      "phone": "0698501397",
+      "lastSchool": "Khwezi H",
+      "recoveryQuestion": "What was the name of your first school?",
+      "moduleProgress": {},
+      "recoveryAnswerHash": "1ce8cf5aab9d6a0ba7356216e12e02510bf16a5ecf70aa0f6b296fdcad4baf1e",
+      "selectedCourse": "Data Science Practitioner"
+    },
+    {
+      "id": "68a4d4cf-e01a-4fd9-aee4-55c5eeb006c0",
+      "name": "Test Learner",
+      "username": "testlearner",
+      "email": "testlearner@example.com",
+      "role": "learner",
+      "avatar": "TL",
+      "status": "Pending",
+      "passwordSalt": "06036b730df12d9aad47c02980a3be02",
+      "passwordHash": "1844bb23c14d4ba7609317149b7218a9c747b4fe3b5669235541a028d3431dd5c03baad2888549f8b4a68c668ebed52fcba9f739f97ca6bcab4cc9dcb0828c2c",
+      "identityNumber": "9001010001083",
+      "passportNumber": "",
+      "dateOfBirth": "1990-01-01",
+      "gender": "female",
+      "phone": "0810000000",
+      "lastSchool": "Test School",
+      "recoveryQuestion": "What was the name of your first school?",
+      "moduleProgress": {},
+      "recoveryAnswerHash": "221f5bcaa2fa73956210a4a836d9e9bf496db62ea1ea79e518a9af38114db51e",
+      "selectedCourse": "Data Science Practitioner"
+    },
+    {
+      "id": "c2d3d80c-a511-4937-80b2-85c410926a13",
+      "name": "Smoke Test",
+      "username": "smoketest",
+      "email": "smoketest@example.com",
+      "role": "learner",
+      "avatar": "ST",
+      "status": "Pending",
+      "passwordSalt": "df62df2ccf29c22158656c6f2b59a255",
+      "passwordHash": "f46e75753b3c33cd8bf2776b5eafd8f372fdd1cd3f479d8dd568b399638e62f04b0f4fa170d812bda4ae31aabf7f266006e8e22bf400f0b7a18c4c9c84ecfc68",
+      "identityNumber": "9001010001084",
+      "passportNumber": "",
+      "dateOfBirth": "1990-01-01",
+      "gender": "female",
+      "phone": "0811111111",
+      "lastSchool": "Smoke School",
+      "recoveryQuestion": "What was the name of your first school?",
+      "moduleProgress": {},
+      "recoveryAnswerHash": "221f5bcaa2fa73956210a4a836d9e9bf496db62ea1ea79e518a9af38114db51e",
+      "selectedCourse": "Data Science Practitioner"
+    },
+    {
+      "id": "3fce05da-ed7a-46fe-924f-722b7b93b956",
+      "name": "Test User",
+      "username": "testuser01",
+      "email": "testuser01@example.com",
+      "role": "learner",
+      "avatar": "TU",
+      "status": "Pending",
+      "passwordSalt": "9d4a04554a3989cf07bdfb1573deec3f",
+      "passwordHash": "c63fec6818359b5f28782b5b0b19f300033543e1186ecf6a4576a6f4dce62f3bff716bc3b5f49dd9cb9907d11cc41fda990986fd0c72881b56d87667680a6225",
+      "identityNumber": "9001011234567",
+      "passportNumber": "",
+      "dateOfBirth": "1990-01-01",
+      "gender": "Female",
+      "phone": "0821111111",
+      "lastSchool": "Test School",
+      "recoveryQuestion": "What was the name of your first school?",
+      "moduleProgress": {},
+      "recoveryAnswerHash": "2643b1b74d4dacebe7cf159aa31b82af491cccbbb60a9f236926b16d29d944d8",
+      "selectedCourse": "Data Science Practitioner"
+    },
+    {
+      "id": "928e140f-a807-4d66-add8-322e79dd3268",
+      "name": "Visual Test",
+      "username": "visualtest02",
+      "email": "visualtest02@example.com",
+      "role": "learner",
+      "avatar": "VT",
+      "status": "Pending",
+      "passwordSalt": "86f444e2c74e8b01af7ed1b0d4bd811d",
+      "passwordHash": "fd143c58d5f9d7cd9762fd2d442bdd70285f5c606296c14ae83e32eaae383bb42d6a17b552d0256c5f08d48ecfb46acff7133c557b39c907fb471f6a1be82b4a",
+      "identityNumber": "9001012222333",
+      "passportNumber": "",
+      "dateOfBirth": "1990-01-01",
+      "gender": "Female",
+      "phone": "0822222222",
+      "lastSchool": "Visual School",
+      "recoveryQuestion": "What is the name of the town where you were born?",
+      "moduleProgress": {},
+      "recoveryAnswerHash": "42be7e62d696dea50d732f0929e2ac081ea2d9c2699b9eafad336547fbd2c044",
+      "selectedCourse": "Data Science Practitioner"
+    }
+  ],
+  "courses": [
+    {
+      "id": "cert-data-science",
+      "code": "DSP",
+      "title": "Data Science Practitioner",
+      "instructor": "Chimera Learning",
+      "instructorId": "u2",
+      "progress": 0,
+      "status": "in-progress",
+      "students": 0,
+      "modules": {
+        "Knowledge Modules": [
+          "Introduction to data science and data analysis",
+          "Logical thinking and basic calculations: refresher",
+          "Computers and computing systems",
+          "Computing theory",
+          "Basic statistics for data analytics",
+          "Statistics essentials for data analytics",
+          "Data science and data analysis",
+          "Data analysis and visualisation",
+          "Introduction to governance, legislation and ethics",
+          "Fundamentals of design thinking and innovation",
+          "4IR and future skills"
+        ],
+        "Practical Skill Modules": [
+          "Apply logical thinking and maths refresher",
+          "Apply code to use a software toolkit/platform in the field of study or employment",
+          "Use spreadsheets to analyse and visualise data",
+          "Use a visual analytics platform to analyse and visualise data",
+          "Apply statistical tools and techniques (Level 5, 4 credits)",
+          "Collect and pre-process large amounts of unruly data",
+          "Apply data analysis techniques to uncover patterns and trends in datasets",
+          "Prepare and present descriptive analytic reports for decision making",
+          "Participate in a design thinking for innovation workshop",
+          "Collaborate ethically and effectively in the workplace"
+        ],
+        "Work Experience Modules": [
+          "Data collection and preprocessing processes",
+          "Statistical data analysis processes",
+          "Data visualisation and reporting processes",
+          "Capstone project using an appropriate toolkit"
+        ]
+      }
+    },
+    {
+      "id": "cert-ai-software-developer",
+      "code": "AI-SDEV",
+      "title": "AI Software Developer",
+      "instructor": "Chimera Learning",
+      "instructorId": "u2",
+      "progress": 0,
+      "status": "in-progress",
+      "students": 2,
+      "modules": {
+        "Knowledge Modules": [
+          "Overview of Artificial Intelligence",
+          "Introduction to Mathematics and Statistics",
+          "Analytical Thinking and Problem Solving",
+          "Data, Databases and Data Visualisation",
+          "Computing Theory",
+          "Introduction to Artificial Intelligence, Machine Learning, Deep Learning",
+          "Artificial Intelligence",
+          "Machine Learning",
+          "Deep Learning",
+          "Introduction to Governance, Legislation and Ethics",
+          "Fundamentals of Design Thinking and Innovation",
+          "4IR and Future Skills"
+        ],
+        "Practical Skill Modules": [
+          "Mathematics and Statistics for Programming",
+          "Problem Definition, Analytical Thinking and Decision-Making",
+          "Artificial Intelligence Software Developer",
+          "Access, Analyse and Visualise Structured Data Using Spreadsheets",
+          "Use SQL to Communicate with a Database",
+          "Build a simple AI solution using Python",
+          "Use Python Data Scraping to Populate Database Table in SQL",
+          "Use Machine Learning to Build an AI solution in Python",
+          "Use Deep Learning to Build an AI Neural Network Architecture in Python",
+          "Use Deep Learning to Build an AI Neural Network Architecture in TensorFlow",
+          "Function Ethically and Effectively as a Member of a Multidisciplinary Team",
+          "Participate in a Design Thinking for Innovation Workshop"
+        ],
+        "Work Experience Modules": [
+          "AI Solution Design Interpretation and Development",
+          "AI Solution Performance Testing",
+          "AI Solution Deployment, Modification and Improvement"
+        ]
+      }
+    },
+    {
+      "id": "cert-software-developer",
+      "code": "SDEV",
+      "title": "Software Developer",
+      "instructor": "Chimera Learning",
+      "instructorId": "u2",
+      "progress": 0,
+      "status": "in-progress",
+      "students": 1,
+      "modules": {
+        "Knowledge Modules": [
+          "Computers and Computing Systems",
+          "Desktop and Professional Software to Communicate and Visualise Information",
+          "Automated Webscraping as a Data Source",
+          "Logical Thinking and Basic Calculations",
+          "Computing Theory",
+          "Software Development with HTML5, Opensource Frameworks and Libraries",
+          "UML as Standard Modelling Language for Software and Systems Development",
+          "Obtaining, Querying, Manipulating and Presenting Data with and without MVC",
+          "Software Development Life Cycle, Programming Languages, Algorithms and Security",
+          "Introduction to Software Developer Governance, Legislation and Ethics",
+          "4IR and Future Skills",
+          "Occupational Certificate: Software Developer",
+          "Design Thinking Principles for Innovation"
+        ],
+        "Practical Skill Modules": [
+          "Use Software to Communicate and Visualise Information",
+          "Use and Manage Spreadsheets and Workbooks",
+          "Use Desktop Applications to Analyse, Visualise and report on Data",
+          "Use a Visual Analytics Platform and Visualisation Tools to Analyse, Visualise and report on Data",
+          "Query and Massage Data",
+          "Apply Logical Thinking and Maths",
+          "Apply Code to use a Software Toolkit/Platform in the Field of Study or Employment",
+          "Develop Software using HTML5, Opensource Frameworks and Libraries",
+          "Design and Build Web Applications, Desktop Graphical User Interfaces or Mobile Apps",
+          "Use a Cloud Automation Platform to Create Solutions",
+          "Develop Software using Python",
+          "Apply the Development Cycle when Developing Software",
+          "Participate in a Design Thinking for Innovation Workshop",
+          "Function Ethically and Effectively in a Team"
+        ],
+        "Work Experience Modules": [
+          "Technical Requirement Analysis and Refinement",
+          "Modelling Processes",
+          "Programming for Software Solution Development",
+          "Capstone project"
+        ]
+      }
+    },
+    {
+      "id": "cert-cyber-security-analyst",
+      "code": "CSA",
+      "title": "Cybersecurity Analyst",
+      "instructor": "Chimera Learning",
+      "instructorId": "u2",
+      "progress": 0,
+      "status": "in-progress",
+      "students": 0,
+      "modules": {
+        "Knowledge Modules": [
+          "Introduction to Cybersecurity",
+          "Fundamentals of Network Security and Defence (Network Defender)",
+          "Cybersecurity and Cyber Threats and Attacks (Ethical Hacking)",
+          "Introduction to Cybersecurity Governance, Legislation and Ethics",
+          "Fundamentals of Design Thinking and Innovation",
+          "Refresher: Logical Thinking and Basic Calculations",
+          "Computers, Devices and Computing Systems",
+          "Data and Databases Vulnerabilities",
+          "Introduction to 4IR and Future Skills"
+        ],
+        "Practical Skill Modules": [
+          "Ensure Compliance in terms of Legal Cybersecurity Requirements and National and International Standard",
+          "Assess Risks and Vulnerabilities and Evaluate Current Security Measures",
+          "Occupational Certificate: Cybersecurity Analyst",
+          "Implement Protection, Prevention and Detection Measures to Mitigate Risk, Violations and Vulnerabilities",
+          "Apply Logical Thinking and Maths: Refresher",
+          "Apply Basic Scriptwriting for Cybersecurity Toolsets",
+          "Access and Visualise Structured Data Using Spreadsheets: Refresher",
+          "Applying Design Thinking Methodologies",
+          "Function Ethically and Effectively as a Member of a Multidisciplinary Team"
+        ],
+        "Work Experience Modules": [
+          "Compliance with Legal Cybersecurity Requirements",
+          "Cybersecurity Risk Assessment and Mitigation",
+          "Cybersecurity Detection, Protection and Prevention Processes"
+        ]
+      }
+    },
+    {
+      "id": "cert-project-manager",
+      "code": "PM",
+      "title": "Project Manager",
+      "instructor": "Chimera Learning",
+      "instructorId": "u2",
+      "progress": 0,
+      "status": "in-progress",
+      "students": 0,
+      "modules": {
+        "Knowledge Modules": [
+          "Introductory studies for Project Managers",
+          "Project Integration Management",
+          "Project scope management",
+          "Project Time Management",
+          "Project Cost Management",
+          "Project Quality Management",
+          "Project Human Resource Management",
+          "Project Communications Management",
+          "Project Risk Management",
+          "Project Procurement Management",
+          "Project Stakeholder Management"
+        ],
+        "Practical Skill Modules": [
+          "Initiate a project",
+          "Plan and develop a project management approach and scope statement",
+          "Plan and develop a project time line and schedule",
+          "Plan for and project the cost of a project",
+          "Plan project management systems",
+          "Monitor and control the scope of a project",
+          "Control the project delivery schedules and costs",
+          "Control the project quality",
+          "Manage and control the human resources of a project",
+          "Conduct and control project communication and stakeholder interaction",
+          "Manage and control project risks",
+          "Manage and control project procurement activities",
+          "Manage and control project close-out activities"
+        ],
+        "Work Experience Modules": [
+          "Attend to project initiation management processes",
+          "Attend to project planning processes",
+          "Attend to project execution and control processes",
+          "Attend to project close out processes"
+        ]
+      }
+    }
+  ],
+  "assignments": [
+    {
+      "id": "c64eab79-f739-4871-9cd4-ac1b19e88c29",
+      "title": "test1",
+      "course": "DSP",
+      "courseId": "cert-data-science",
+      "due": "",
+      "status": "pending",
+      "grade": null,
+      "type": "Assignment",
+      "createdBy": "u2"
+    }
+  ],
+  "enrollments": [
+    {
+      "userId": "db17fbfe-c03c-4376-bc23-5302371953cd",
+      "courseId": "cert-software-developer"
+    },
+    {
+      "userId": "0690fe98-4809-4f32-9ae1-f8aed014d9fa",
+      "courseId": "cert-data-science"
+    },
+    {
+      "userId": "e6463868-3a57-454f-8423-4bf8413b45f9",
+      "courseId": "cert-ai-software-developer"
+    },
+    {
+      "userId": "b11d4e57-60c8-4a69-bdd4-b070f7aa94cb",
+      "courseId": "cert-data-science"
+    },
+    {
+      "userId": "0690fe98-4809-4f32-9ae1-f8aed014d9fa",
+      "courseId": "cert-ai-software-developer",
+      "enrolledAt": "2026-10-26T11:39:59.425Z"
+    },
+    {
+      "userId": "68a4d4cf-e01a-4fd9-aee4-55c5eeb006c0",
+      "courseId": "cert-data-science"
+    },
+    {
+      "userId": "c2d3d80c-a511-4937-80b2-85c410926a13",
+      "courseId": "cert-data-science"
+    },
+    {
+      "userId": "3fce05da-ed7a-46fe-924f-722b7b93b956",
+      "courseId": "cert-data-science"
+    },
+    {
+      "userId": "928e140f-a807-4d66-add8-322e79dd3268",
+      "courseId": "cert-data-science"
+    }
+  ],
+  "submissions": [],
+  "materials": [
+    {
+      "id": "51f41d5d-192c-4ea5-ab41-cb09d63c589b",
+      "course": "DSP",
+      "title": "KM1",
+      "filename": "Phiwa Practical Module 7.doc",
+      "uploadedBy": "u2",
+      "uploadedAt": "2026-10-20T08:25:46.872Z"
+    },
+    {
+      "id": "50f9d89d-8008-4417-bc94-e88989019937",
+      "course": "",
+      "title": "data",
+      "filename": "HOW TO INSTALL.txt",
+      "uploadedBy": "u2",
+      "uploadedAt": "2026-10-26T12:40:15.900Z"
+    }
+  ],
+  "program_applications": [
+    {
+      "id": "066b59b5-dbdb-4761-b80f-b8cdccb73368",
+      "userId": "db17fbfe-c03c-4376-bc23-5302371953cd",
+      "course": "Software Developer",
+      "status": "pending",
+      "submittedAt": "2026-10-08T10:29:57.513Z"
+    },
+    {
+      "id": "0f6fe5e8-cf05-427d-ab10-5057f7dd88cb",
+      "userId": "0690fe98-4809-4f32-9ae1-f8aed014d9fa",
+      "course": "Data Science Practitioner",
+      "status": "pending",
+      "submittedAt": "2026-10-09T10:22:02.954Z"
+    },
+    {
+      "id": "325c31b5-743f-4c21-b410-4cfaa3028bb3",
+      "userId": "e6463868-3a57-454f-8423-4bf8413b45f9",
+      "course": "AI Software Developer",
+      "status": "pending",
+      "submittedAt": "2026-10-13T08:42:31.402Z"
+    },
+    {
+      "id": "10cfe921-3ee8-48d9-ae4c-83c3372c9243",
+      "userId": "b11d4e57-60c8-4a69-bdd4-b070f7aa94cb",
+      "course": "Data Science Practitioner",
+      "status": "pending",
+      "submittedAt": "2026-10-20T10:31:30.181Z"
+    },
+    {
+      "id": "95bb0229-e2ec-48a1-b384-31e1efb414a8",
+      "userId": "68a4d4cf-e01a-4fd9-aee4-55c5eeb006c0",
+      "course": "Data Science Practitioner",
+      "status": "pending",
+      "submittedAt": "2026-10-28T18:34:42.324Z"
+    },
+    {
+      "id": "4a639bce-a571-4867-902d-339930e77e01",
+      "userId": "c2d3d80c-a511-4937-80b2-85c410926a13",
+      "course": "Data Science Practitioner",
+      "status": "pending",
+      "submittedAt": "2026-10-28T18:35:36.598Z"
+    },
+    {
+      "id": "d6627497-d317-42dd-a790-92933b75eab9",
+      "userId": "3fce05da-ed7a-46fe-924f-722b7b93b956",
+      "course": "Data Science Practitioner",
+      "status": "pending",
+      "submittedAt": "2026-10-28T19:39:30.489Z"
+    },
+    {
+      "id": "4c7b7a38-e996-4dc8-8929-f326b44e10cf",
+      "userId": "928e140f-a807-4d66-add8-322e79dd3268",
+      "course": "Data Science Practitioner",
+      "status": "pending",
+      "submittedAt": "2026-10-28T19:51:14.779Z"
+    }
+  ],
+  "audit_log": [
+    {
+      "id": "063e8ad2-2155-488b-9ba8-9a5a5c301e88",
+      "time": "2026-10-28T19:51:14.779Z",
+      "user": "visualtest02@example.com",
+      "role": "learner",
+      "action": "Registered for Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "6e77032b-f290-408f-8ec6-1765100c6ec3",
+      "time": "2026-10-28T19:39:30.489Z",
+      "user": "testuser01@example.com",
+      "role": "learner",
+      "action": "Registered for Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "481a9abe-7f1f-4ab1-87ca-d0154da1b4d4",
+      "time": "2026-10-28T18:35:36.598Z",
+      "user": "smoketest@example.com",
+      "role": "learner",
+      "action": "Registered for Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "5448fd2d-72ca-48f7-86cc-5f3bc56a2347",
+      "time": "2026-10-28T18:34:42.499Z",
+      "user": "testlearner@example.com",
+      "role": "learner",
+      "action": "Registered for Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "560f0935-0f89-4af3-8087-b03a2833b5e1",
+      "time": "2026-10-26T12:45:58.313Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Left Software Developer",
+      "status": "Success"
+    },
+    {
+      "id": "2419f24e-c70e-4b5e-af4c-3533f050fc4e",
+      "time": "2026-10-26T12:40:15.901Z",
+      "user": "s.chen@faculty.edu",
+      "role": "lecturer",
+      "action": "Uploaded course material data",
+      "status": "Success"
+    },
+    {
+      "id": "4e048e08-ca61-487a-8626-f31f2f7ff207",
+      "time": "2026-10-26T12:36:42.145Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Data analysis and visualisation in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "3acbbd7e-5dd2-4d99-86f4-b3d1ffe793f8",
+      "time": "2026-10-26T12:36:38.806Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Computers and computing systems in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "3d5cdd42-7cad-4f90-8e89-67c33af91ab1",
+      "time": "2026-10-26T12:36:37.756Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "e15b2224-7082-4dae-ab60-0021c540de25",
+      "time": "2026-10-26T12:36:36.832Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Computers and computing systems in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "e0043931-5cd2-465c-aea9-838232fa13d3",
+      "time": "2026-10-26T12:36:35.682Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "3322633a-bbe8-4c2a-b093-45e8a7e3ca68",
+      "time": "2026-10-26T12:36:19.748Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "18c48b97-e3dd-4691-81d1-848c0a7a2fc8",
+      "time": "2026-10-26T12:36:18.970Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "1868f0ca-acca-453c-a25f-db6ec8468b14",
+      "time": "2026-10-26T12:36:16.458Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "409f3399-e18a-4a63-9a8f-410058a0ef16",
+      "time": "2026-10-26T12:36:15.360Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "3630faf1-88ae-404b-bd43-6afa780dcb79",
+      "time": "2026-10-26T12:36:11.002Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "48120d93-89dd-4f31-8d8c-d5fdd091d0e3",
+      "time": "2026-10-26T12:35:34.988Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "61b703ea-3c55-42b0-9933-309028b6f158",
+      "time": "2026-10-26T12:26:46.006Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "38a1e8bc-e2fe-48fe-9229-2faa59ac2e91",
+      "time": "2026-10-26T12:26:39.226Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "fc841a66-0dcd-4a7d-b6dd-e3727ee7823b",
+      "time": "2026-10-26T12:26:34.535Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "d146b463-45fa-465e-acab-8fe6928eb53f",
+      "time": "2026-10-26T12:26:30.156Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "6d395116-c130-41ca-9aa5-4fdb61486f78",
+      "time": "2026-10-26T12:25:47.299Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Enrolled in Software Developer",
+      "status": "Success"
+    },
+    {
+      "id": "13fc7b9b-204a-44d7-ae13-3b1b24ae3bf2",
+      "time": "2026-10-26T11:58:37.327Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Statistical data analysis processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "43d708da-7e2b-4132-8584-e6704105166f",
+      "time": "2026-10-26T11:58:15.147Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "58ed5d16-c413-446c-8625-fd64494dd52c",
+      "time": "2026-10-26T11:53:19.308Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Fundamentals of design thinking and innovation in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "dc2d6e18-9b54-4bf1-86ab-d2e4c270b7ec",
+      "time": "2026-10-26T11:53:02.150Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "e8dc2c55-d7c8-4963-b977-fa6e44723112",
+      "time": "2026-10-26T11:52:50.123Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Introduction to governance, legislation and ethics in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "8887bf5d-bbfb-47ad-9d13-062d3487a8d0",
+      "time": "2026-10-26T11:49:21.204Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "48c798d1-c889-477d-a673-194424423cb4",
+      "time": "2026-10-26T11:49:12.791Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "d7627537-ed31-4243-92be-1f006a3ec650",
+      "time": "2026-10-26T11:39:59.425Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Enrolled in AI Software Developer",
+      "status": "Success"
+    },
+    {
+      "id": "97ccfaf7-c67c-47d4-ae6a-b2a11e0a4ff3",
+      "time": "2026-10-26T11:20:32.841Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Use spreadsheets to analyse and visualise data in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "1e1843cd-8e32-4001-9c2d-6f9a47c64478",
+      "time": "2026-10-26T11:20:17.626Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Apply data analysis techniques to uncover patterns and trends in datasets in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "d9576448-318a-4976-b590-7e717d38b5e5",
+      "time": "2026-10-26T11:20:03.167Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "b3dc012c-ae5a-490c-8298-fb3b7dfad743",
+      "time": "2026-10-26T11:19:57.436Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Statistics essentials for data analytics in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "f13ac04a-cd03-4457-b71e-f4a3c17fbb52",
+      "time": "2026-10-26T11:19:44.630Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Prepare and present descriptive analytic reports for decision making in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "50ee85e3-73a2-4d09-aaa1-a42b1ca6549e",
+      "time": "2026-10-26T11:19:26.122Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Collect and pre-process large amounts of unruly data in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "ecbdadd7-b999-4481-882e-2db6db753e20",
+      "time": "2026-10-26T11:18:48.541Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Apply statistical tools and techniques (Level 5, 4 credits) in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "4a432706-fbfb-4e9d-a862-5bd2440c8daa",
+      "time": "2026-10-22T09:40:11.489Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Basic statistics for data analytics in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "94814297-ed4e-4299-81d3-1d6e44339a9c",
+      "time": "2026-10-22T09:40:09.901Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Computing theory in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "b6fdb8c2-4bc9-479f-b0ef-a722692260c2",
+      "time": "2026-10-22T09:40:08.719Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Computers and computing systems in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "a96c93cd-df93-4cfd-9fae-0faed659c0c2",
+      "time": "2026-10-22T09:40:07.087Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Statistical data analysis processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "582e967f-ca18-4011-98d5-09c8162d2865",
+      "time": "2026-10-22T09:40:05.763Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Data visualisation and reporting processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "73fd4a27-e49d-4b40-b554-fc514a8896de",
+      "time": "2026-10-22T09:40:04.623Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Capstone project using an appropriate toolkit in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "d4806b6c-cb7d-46b9-b4c1-ef5066f9bded",
+      "time": "2026-10-22T09:39:46.066Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Apply code to use a software toolkit/platform in the field of study or employment in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "04d96175-9a9b-44e3-9c00-b2ef4258b568",
+      "time": "2026-10-22T09:39:44.521Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "f75f6d77-8560-4bde-94e1-0855bf86c36b",
+      "time": "2026-10-22T09:30:09.201Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "0c8c3d43-8411-41ca-83f0-5e593d257360",
+      "time": "2026-10-22T09:30:07.864Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "ef3f07da-33ea-4a30-ac86-ce9e2762a833",
+      "time": "2026-10-22T09:28:33.252Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "52c870fe-ae76-40f5-be6c-a9f9dd31d9f4",
+      "time": "2026-10-22T09:28:31.688Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Data visualisation and reporting processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "99ebea7f-4456-4a50-b4f6-70705b2ae3d1",
+      "time": "2026-10-22T09:28:30.012Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Apply code to use a software toolkit/platform in the field of study or employment in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "6b2a983d-640d-4bd1-8689-8993f96fae98",
+      "time": "2026-10-22T09:28:28.774Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "1899ad8e-e015-4b20-bdb5-6e413b585f06",
+      "time": "2026-10-22T09:28:26.439Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "e171ef3a-dde8-4439-a6c3-7106be67e459",
+      "time": "2026-10-22T09:26:46.167Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Apply code to use a software toolkit/platform in the field of study or employment in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "2810c665-8feb-4ab2-8676-7ec8f4017fb8",
+      "time": "2026-10-22T09:24:10.478Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "2eb36d37-7578-4bed-8b50-24ba7d07ca66",
+      "time": "2026-10-20T12:26:44.862Z",
+      "user": "mishackkoki@gmail.com",
+      "role": "learner",
+      "action": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "status": "Success"
+    }
+  ],
+  "attendance": [],
+  "notifications": [
+    {
+      "id": "ba73822c-2d8e-4946-9c7a-b1c6cb3c87cb",
+      "userId": "u3",
+      "title": "LMS activity",
+      "message": "Registered for Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-28T19:51:14.779Z"
+    },
+    {
+      "id": "23177c52-58b4-4a5e-bb8d-d2c5b9f2df96",
+      "userId": "u3",
+      "title": "LMS activity",
+      "message": "Registered for Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-28T19:39:30.489Z"
+    },
+    {
+      "id": "04edef68-b0da-4a04-9951-9e627705bc76",
+      "userId": "u3",
+      "title": "LMS activity",
+      "message": "Registered for Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-28T18:35:36.598Z"
+    },
+    {
+      "id": "ec1b384c-c62a-4631-bce7-d539943e52dd",
+      "userId": "u3",
+      "title": "LMS activity",
+      "message": "Registered for Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-28T18:34:42.499Z"
+    },
+    {
+      "id": "c5d5fbc4-8fb4-4e3f-b06e-d967cd3ce974",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Left Software Developer",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:45:58.313Z"
+    },
+    {
+      "id": "f7bd57eb-a5f5-49b6-96a5-319e693ca940",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Data analysis and visualisation in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:42.145Z"
+    },
+    {
+      "id": "2c1930de-c048-40a5-be9b-aa84c2be9db5",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Computers and computing systems in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:38.806Z"
+    },
+    {
+      "id": "b8601588-7918-4fdc-b2d4-28ec24939d71",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:37.756Z"
+    },
+    {
+      "id": "db88e557-b4c7-44da-8394-73a56cdb3f6c",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Computers and computing systems in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:36.832Z"
+    },
+    {
+      "id": "ffd7d61e-d482-4c27-a596-539f2b61569d",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:35.682Z"
+    },
+    {
+      "id": "125d279d-a8fd-4a4f-8ae7-66563b166ce1",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:19.748Z"
+    },
+    {
+      "id": "8f10be0f-3602-420b-867d-d22377c3d3bd",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:18.970Z"
+    },
+    {
+      "id": "81c06de9-3f7c-471b-a2eb-ad00a6d98819",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:16.459Z"
+    },
+    {
+      "id": "a847df52-1ced-4dbf-bed4-f66ddd0690c6",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:15.360Z"
+    },
+    {
+      "id": "9633582b-61bd-4e9a-82c9-86c6e2862149",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:36:11.002Z"
+    },
+    {
+      "id": "9d7ef264-42f0-4b88-acd4-b0fa41491390",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:35:34.988Z"
+    },
+    {
+      "id": "214b8aaf-a129-416e-9a81-2df94492735d",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:26:46.006Z"
+    },
+    {
+      "id": "d8b065b9-8a24-431b-903b-30bc9752d6d2",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:26:39.226Z"
+    },
+    {
+      "id": "ab73b170-fdb8-4b4e-b73d-1db357390be5",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:26:34.535Z"
+    },
+    {
+      "id": "1ba27de7-e5d4-41a6-843d-4d6d16dcc376",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:26:30.156Z"
+    },
+    {
+      "id": "f6fbade7-3d17-4473-9338-eb4e76ac0008",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Enrolled in Software Developer",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T12:25:47.299Z"
+    },
+    {
+      "id": "ce68ccf7-24ca-4215-a8b4-205cee650d27",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Statistical data analysis processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:58:37.328Z"
+    },
+    {
+      "id": "66478070-992d-409a-ab24-fdb56efcfb56",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:58:15.147Z"
+    },
+    {
+      "id": "5cf77d6f-ef7b-41f1-994f-42ce78a8e64f",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Fundamentals of design thinking and innovation in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:53:19.308Z"
+    },
+    {
+      "id": "6d5a3fd2-a8af-4b2b-902c-253d32d885c3",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:53:02.150Z"
+    },
+    {
+      "id": "3045ee3e-48ce-4228-9f70-14d54fda7568",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Introduction to governance, legislation and ethics in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:52:50.123Z"
+    },
+    {
+      "id": "56ed7ec6-5f71-4859-849d-6bb04ccea22c",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:49:21.204Z"
+    },
+    {
+      "id": "49571a02-60a9-4f90-94ed-29a5a88b3818",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:49:12.791Z"
+    },
+    {
+      "id": "92699f50-e61c-41ee-ac9b-e708dff379fb",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Enrolled in AI Software Developer",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:39:59.425Z"
+    },
+    {
+      "id": "dc25ed64-552b-4af3-ab96-b044c3c11ac7",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Use spreadsheets to analyse and visualise data in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:20:32.841Z"
+    },
+    {
+      "id": "ed81b555-0e19-40b9-95f5-192ced639eec",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Apply data analysis techniques to uncover patterns and trends in datasets in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:20:17.627Z"
+    },
+    {
+      "id": "0d316643-bd39-4cab-85ae-244c9a94d6d2",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:20:03.167Z"
+    },
+    {
+      "id": "8f2a5123-a352-47e9-8917-c2e25e550473",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Statistics essentials for data analytics in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:19:57.436Z"
+    },
+    {
+      "id": "9ce79312-02ac-4636-b92a-0195ebda37ed",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Prepare and present descriptive analytic reports for decision making in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:19:44.630Z"
+    },
+    {
+      "id": "e7b2ec4b-3dd6-4407-8635-80ce0bffc73d",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Collect and pre-process large amounts of unruly data in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:19:26.122Z"
+    },
+    {
+      "id": "b06ac918-cfdd-401f-95de-0ef0d5d4ff96",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Apply statistical tools and techniques (Level 5, 4 credits) in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-26T11:18:48.541Z"
+    },
+    {
+      "id": "dfd4767b-9a4b-4e46-ab3c-7706809ba6e8",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Basic statistics for data analytics in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:40:11.489Z"
+    },
+    {
+      "id": "d02ffd5d-6839-42e7-aa91-bbd9242e643d",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Computing theory in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:40:09.901Z"
+    },
+    {
+      "id": "b68d3a0e-b399-4007-9585-85533640f6f1",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Computers and computing systems in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:40:08.719Z"
+    },
+    {
+      "id": "cea29d53-89d1-49c0-9a24-775a362e9dc7",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Statistical data analysis processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:40:07.087Z"
+    },
+    {
+      "id": "4ffc46c7-1612-47ea-be9d-30b05ad2e207",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Data visualisation and reporting processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:40:05.764Z"
+    },
+    {
+      "id": "441b20b5-f1cc-4b7c-948d-a7d3ef87bb6b",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Capstone project using an appropriate toolkit in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:40:04.624Z"
+    },
+    {
+      "id": "a893a554-06bc-4413-8616-97b7c46e32a2",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Apply code to use a software toolkit/platform in the field of study or employment in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:39:46.066Z"
+    },
+    {
+      "id": "bbe85e91-00ce-4a3a-9d9c-21b7fdb5041c",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Logical thinking and basic calculations: refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:39:44.521Z"
+    },
+    {
+      "id": "fcf66ab5-0cf2-4d6a-9038-c3944fb13703",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:30:09.201Z"
+    },
+    {
+      "id": "ec0c19da-7b5b-4aed-a005-302270fc4d4f",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:30:07.864Z"
+    },
+    {
+      "id": "d4268bcc-486a-4825-a06b-038244b26c4c",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:28:33.253Z"
+    },
+    {
+      "id": "e05bf490-97e0-462b-bba7-0a324e85f85b",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Data visualisation and reporting processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:28:31.688Z"
+    },
+    {
+      "id": "3f048555-170f-461a-92dd-81e44c09f078",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Apply code to use a software toolkit/platform in the field of study or employment in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:28:30.012Z"
+    },
+    {
+      "id": "029325cb-bcc1-45fe-b166-44c76bf8b3de",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Apply logical thinking and maths refresher in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:28:28.774Z"
+    },
+    {
+      "id": "784d47ec-e416-45dc-8361-158449eb48fd",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Reopened lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:28:26.439Z"
+    },
+    {
+      "id": "a708349a-1839-4749-9eb6-d428f05ca6ed",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Apply code to use a software toolkit/platform in the field of study or employment in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:26:46.167Z"
+    },
+    {
+      "id": "72cf58d9-e284-4a45-8064-e790324ab0fc",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Data collection and preprocessing processes in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-22T09:24:10.478Z"
+    },
+    {
+      "id": "d2f4e050-9877-4c30-a74c-f8005dafbd1c",
+      "userId": "u2",
+      "title": "LMS activity",
+      "message": "Completed lesson Introduction to data science and data analysis in Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-10-20T12:26:44.862Z"
+    }
+  ],
+  "messages": [],
+  "announcements": [],
+  "quiz_attempts": []
+}

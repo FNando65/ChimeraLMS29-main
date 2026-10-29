@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Chimera LMS API",
+      "type": "shell",
+      "command": "npm",
+      "args": ["start"],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated"
+      },
+      "problemMatcher": {
+        "owner": "chimera-lms-api",
+        "pattern": {
+          "regexp": "^(a^)(.*)$",
+          "file": 1,
+          "message": 2
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^> chimera-lms-backend@.* start$",
+          "endsPattern": "^Chimera LMS JavaScript API listening on http://0\\.0\\.0\\.0:5000$"
+        }
+      }
+    }
+  ]
+}

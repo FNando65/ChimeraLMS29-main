@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">Chimera LMS system architecture</title>
+  <desc id="desc">Learner, lecturer, and administrator browsers call a Node.js frontend host and JSON API. The API reads users from the Supabase users table and other LMS state from lms_state, or uses a local JSON file when Supabase is not configured.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#536b8b"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#16243a}.title{font-size:30px;font-weight:700}.subtitle{font-size:15px;fill:#65738a}.head{font-size:19px;font-weight:700}.label{font-size:15px;font-weight:600}.body{font-size:14px;fill:#526178}.small{font-size:12px;fill:#63738a}.card{fill:#fff;stroke:#d8e1ee;stroke-width:2}.blue{fill:#edf3ff;stroke:#82a6ef}.purple{fill:#f3efff;stroke:#b19aee}.green{fill:#e9f8f1;stroke:#7bcca4}.gold{fill:#fff6df;stroke:#e3be61}.line{fill:none;stroke:#536b8b;stroke-width:3;marker-end:url(#arrow)}.dash{fill:none;stroke:#9aa9bc;stroke-width:2.5;stroke-dasharray:8 7;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1400" height="820" rx="24" fill="#f5f7fb"/>
+  <text x="48" y="58" class="title">Chimera LMS · system architecture</text>
+  <text x="48" y="88" class="subtitle">Three role-based experiences share one application API and a server-controlled persistence boundary.</text>
+
+  <rect x="48" y="132" width="340" height="476" rx="20" class="card"/>
+  <rect x="48" y="132" width="340" height="68" rx="20" fill="#172a43"/>
+  <path d="M48 180h340v20H48z" fill="#172a43"/>
+  <text x="76" y="174" fill="#fff" style="font-family:Inter,Segoe UI,Arial,sans-serif;font-size:20px;font-weight:700">Browser · frontend</text>
+  <rect x="78" y="228" width="280" height="80" rx="14" class="blue"/>
+  <text x="98" y="259" class="label">index.html</text><text x="98" y="283" class="body">Login, registration, app shell</text>
+  <rect x="78" y="328" width="280" height="102" rx="14" class="purple"/>
+  <text x="98" y="359" class="label">Javascript/app.js</text><text x="98" y="383" class="body">Role navigation, form handling</text><text x="98" y="405" class="body">API calls and dashboard rendering</text>
+  <rect x="78" y="450" width="280" height="72" rx="14" class="blue"/>
+  <text x="98" y="479" class="label">Css/styles.css</text><text x="98" y="502" class="body">Responsive visual system</text>
+  <rect x="78" y="542" width="280" height="42" rx="12" fill="#fff6df" stroke="#e3be61" stroke-width="2"/>
+  <text x="98" y="569" class="small">Bearer token kept in browser localStorage</text>
+
+  <rect x="480" y="132" width="390" height="476" rx="20" class="card"/>
+  <rect x="480" y="132" width="390" height="68" rx="20" fill="#253b5a"/>
+  <path d="M480 180h390v20H480z" fill="#253b5a"/>
+  <text x="510" y="174" fill="#fff" style="font-family:Inter,Segoe UI,Arial,sans-serif;font-size:20px;font-weight:700">Node.js · backend/server.js</text>
+  <rect x="510" y="226" width="330" height="72" rx="14" class="blue"/>
+  <text x="532" y="256" class="label">HTTP server</text><text x="532" y="280" class="body">Serves the app and /api routes</text>
+  <rect x="510" y="318" width="330" height="88" rx="14" class="purple"/>
+  <text x="532" y="348" class="label">Authentication and authorization</text><text x="532" y="374" class="body">Checks signed token, account status, role</text>
+  <rect x="510" y="426" width="330" height="76" rx="14" class="green"/>
+  <text x="532" y="456" class="label">LMS route handlers</text><text x="532" y="480" class="body">Courses, learning, grading, notifications</text>
+  <rect x="510" y="522" width="330" height="62" rx="14" class="gold"/>
+  <text x="532" y="549" class="label">Persistence adapter</text><text x="532" y="571" class="small">Maps users; revision-checks LMS state</text>
+
+  <rect x="964" y="132" width="388" height="476" rx="20" class="card"/>
+  <rect x="964" y="132" width="388" height="68" rx="20" fill="#1e6651"/>
+  <path d="M964 180h388v20H964z" fill="#1e6651"/>
+  <text x="992" y="174" fill="#fff" style="font-family:Inter,Segoe UI,Arial,sans-serif;font-size:20px;font-weight:700">Supabase · PostgreSQL</text>
+  <rect x="994" y="226" width="328" height="126" rx="14" class="green"/>
+  <text x="1016" y="257" class="label">public.users</text><text x="1016" y="282" class="body">Account source of truth</text><text x="1016" y="305" class="body">Typed identity/auth columns</text><text x="1016" y="328" class="body">Profile extensions in attributes JSONB</text>
+  <rect x="994" y="372" width="328" height="162" rx="14" class="blue"/>
+  <text x="1016" y="403" class="label">lms_state · one JSONB row</text><text x="1016" y="428" class="body">Courses, assessments and submissions</text><text x="1016" y="451" class="body">Enrollments, messages, announcements</text><text x="1016" y="474" class="body">Notifications and activity log</text><text x="1016" y="507" class="small">Other relational schema is a migration target</text>
+  <rect x="994" y="552" width="328" height="34" rx="10" fill="#fff6df" stroke="#e3be61" stroke-width="2"/>
+  <text x="1010" y="575" class="small">Server-only secret key · backend/.env</text>
+
+  <path d="M388 342H470" class="line"/><text x="398" y="326" class="small">HTTPS/JSON</text>
+  <path d="M480 382H398" class="dash"/><text x="399" y="407" class="small">JSON response</text>
+  <path d="M870 338H954" class="line"/><text x="879" y="322" class="small">PostgREST</text>
+  <path d="M964 418H880" class="dash"/><text x="884" y="443" class="small">Rows / state</text>
+
+  <rect x="48" y="656" width="1304" height="112" rx="18" class="card"/>
+  <text x="76" y="695" class="head">Local development fallback</text>
+  <text x="76" y="727" class="body">When Supabase URL and server key are absent, the same backend routes read and write backend/data.json instead.</text>
+  <path d="M674 608v34" class="dash"/>
+  <rect x="1066" y="680" width="240" height="54" rx="12" class="gold"/>
+  <text x="1090" y="713" class="label">backend/data.json</text>
+  <path d="M1046 707H1010" class="dash"/>
+</svg>

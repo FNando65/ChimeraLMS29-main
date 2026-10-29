@@ -1,0 +1,224 @@
+[
+  {
+    "id": "cert-data-science",
+    "code": "DSP",
+    "title": "Data Science Practitioner",
+    "instructor": "Chimera Learning",
+    "instructorId": "u2",
+    "progress": 0,
+    "status": "in-progress",
+    "students": 0,
+    "modules": {
+      "Knowledge Modules": [
+        "Introduction to data science and data analysis",
+        "Logical thinking and basic calculations: refresher",
+        "Computers and computing systems",
+        "Computing theory",
+        "Basic statistics for data analytics",
+        "Statistics essentials for data analytics",
+        "Data science and data analysis",
+        "Data analysis and visualisation",
+        "Introduction to governance, legislation and ethics",
+        "Fundamentals of design thinking and innovation",
+        "4IR and future skills"
+      ],
+      "Practical Skill Modules": [
+        "Apply logical thinking and maths refresher",
+        "Apply code to use a software toolkit/platform in the field of study or employment",
+        "Use spreadsheets to analyse and visualise data",
+        "Use a visual analytics platform to analyse and visualise data",
+        "Apply statistical tools and techniques (Level 5, 4 credits)",
+        "Collect and pre-process large amounts of unruly data",
+        "Apply data analysis techniques to uncover patterns and trends in datasets",
+        "Prepare and present descriptive analytic reports for decision making",
+        "Participate in a design thinking for innovation workshop",
+        "Collaborate ethically and effectively in the workplace"
+      ],
+      "Work Experience Modules": [
+        "Data collection and preprocessing processes",
+        "Statistical data analysis processes",
+        "Data visualisation and reporting processes",
+        "Capstone project using an appropriate toolkit"
+      ]
+    }
+  },
+  {
+    "id": "cert-ai-software-developer",
+    "code": "AI-SDEV",
+    "title": "AI Software Developer",
+    "instructor": "Chimera Learning",
+    "instructorId": "u2",
+    "progress": 0,
+    "status": "in-progress",
+    "students": 0,
+    "modules": {
+      "Knowledge Modules": [
+        "Overview of Artificial Intelligence",
+        "Introduction to Mathematics and Statistics",
+        "Analytical Thinking and Problem Solving",
+        "Data, Databases and Data Visualisation",
+        "Computing Theory",
+        "Introduction to Artificial Intelligence, Machine Learning, Deep Learning",
+        "Artificial Intelligence",
+        "Machine Learning",
+        "Deep Learning",
+        "Introduction to Governance, Legislation and Ethics",
+        "Fundamentals of Design Thinking and Innovation",
+        "4IR and Future Skills"
+      ],
+      "Practical Skill Modules": [
+        "Mathematics and Statistics for Programming",
+        "Problem Definition, Analytical Thinking and Decision-Making",
+        "Artificial Intelligence Software Developer",
+        "Access, Analyse and Visualise Structured Data Using Spreadsheets",
+        "Use SQL to Communicate with a Database",
+        "Build a simple AI solution using Python",
+        "Use Python Data Scraping to Populate Database Table in SQL",
+        "Use Machine Learning to Build an AI solution in Python",
+        "Use Deep Learning to Build an AI Neural Network Architecture in Python",
+        "Use Deep Learning to Build an AI Neural Network Architecture in TensorFlow",
+        "Function Ethically and Effectively as a Member of a Multidisciplinary Team",
+        "Participate in a Design Thinking for Innovation Workshop"
+      ],
+      "Work Experience Modules": [
+        "AI Solution Design Interpretation and Development",
+        "AI Solution Performance Testing",
+        "AI Solution Deployment, Modification and Improvement"
+      ]
+    }
+  },
+  {
+    "id": "cert-software-developer",
+    "code": "SDEV",
+    "title": "Software Developer",
+    "instructor": "Chimera Learning",
+    "instructorId": "u2",
+    "progress": 0,
+    "status": "in-progress",
+    "students": 0,
+    "modules": {
+      "Knowledge Modules": [
+        "Computers and Computing Systems",
+        "Desktop and Professional Software to Communicate and Visualise Information",
+        "Automated Webscraping as a Data Source",
+        "Logical Thinking and Basic Calculations",
+        "Computing Theory",
+        "Software Development with HTML5, Opensource Frameworks and Libraries",
+        "UML as Standard Modelling Language for Software and Systems Development",
+        "Obtaining, Querying, Manipulating and Presenting Data with and without MVC",
+        "Software Development Life Cycle, Programming Languages, Algorithms and Security",
+        "Introduction to Software Developer Governance, Legislation and Ethics",
+        "4IR and Future Skills",
+        "Occupational Certificate: Software Developer",
+        "Design Thinking Principles for Innovation"
+      ],
+      "Practical Skill Modules": [
+        "Use Software to Communicate and Visualise Information",
+        "Use and Manage Spreadsheets and Workbooks",
+        "Use Desktop Applications to Analyse, Visualise and report on Data",
+        "Use a Visual Analytics Platform and Visualisation Tools to Analyse, Visualise and report on Data",
+        "Query and Massage Data",
+        "Apply Logical Thinking and Maths",
+        "Apply Code to use a Software Toolkit/Platform in the Field of Study or Employment",
+        "Develop Software using HTML5, Opensource Frameworks and Libraries",
+        "Design and Build Web Applications, Desktop Graphical User Interfaces or Mobile Apps",
+        "Use a Cloud Automation Platform to Create Solutions",
+        "Develop Software using Python",
+        "Apply the Development Cycle when Developing Software",
+        "Participate in a Design Thinking for Innovation Workshop",
+        "Function Ethically and Effectively in a Team"
+      ],
+      "Work Experience Modules": [
+        "Technical Requirement Analysis and Refinement",
+        "Modelling Processes",
+        "Programming for Software Solution Development",
+        "Capstone project"
+      ]
+    }
+  },
+  {
+    "id": "cert-cyber-security-analyst",
+    "code": "CSA",
+    "title": "Cybersecurity Analyst",
+    "instructor": "Chimera Learning",
+    "instructorId": "u2",
+    "progress": 0,
+    "status": "in-progress",
+    "students": 0,
+    "modules": {
+      "Knowledge Modules": [
+        "Introduction to Cybersecurity",
+        "Fundamentals of Network Security and Defence (Network Defender)",
+        "Cybersecurity and Cyber Threats and Attacks (Ethical Hacking)",
+        "Introduction to Cybersecurity Governance, Legislation and Ethics",
+        "Fundamentals of Design Thinking and Innovation",
+        "Refresher: Logical Thinking and Basic Calculations",
+        "Computers, Devices and Computing Systems",
+        "Data and Databases Vulnerabilities",
+        "Introduction to 4IR and Future Skills"
+      ],
+      "Practical Skill Modules": [
+        "Ensure Compliance in terms of Legal Cybersecurity Requirements and National and International Standard",
+        "Assess Risks and Vulnerabilities and Evaluate Current Security Measures",
+        "Occupational Certificate: Cybersecurity Analyst",
+        "Implement Protection, Prevention and Detection Measures to Mitigate Risk, Violations and Vulnerabilities",
+        "Apply Logical Thinking and Maths: Refresher",
+        "Apply Basic Scriptwriting for Cybersecurity Toolsets",
+        "Access and Visualise Structured Data Using Spreadsheets: Refresher",
+        "Applying Design Thinking Methodologies",
+        "Function Ethically and Effectively as a Member of a Multidisciplinary Team"
+      ],
+      "Work Experience Modules": [
+        "Compliance with Legal Cybersecurity Requirements",
+        "Cybersecurity Risk Assessment and Mitigation",
+        "Cybersecurity Detection, Protection and Prevention Processes"
+      ]
+    }
+  },
+  {
+    "id": "cert-project-manager",
+    "code": "PM",
+    "title": "Project Manager",
+    "instructor": "Chimera Learning",
+    "instructorId": "u2",
+    "progress": 0,
+    "status": "in-progress",
+    "students": 0,
+    "modules": {
+      "Knowledge Modules": [
+        "Introductory studies for Project Managers",
+        "Project Integration Management",
+        "Project scope management",
+        "Project Time Management",
+        "Project Cost Management",
+        "Project Quality Management",
+        "Project Human Resource Management",
+        "Project Communications Management",
+        "Project Risk Management",
+        "Project Procurement Management",
+        "Project Stakeholder Management"
+      ],
+      "Practical Skill Modules": [
+        "Initiate a project",
+        "Plan and develop a project management approach and scope statement",
+        "Plan and develop a project time line and schedule",
+        "Plan for and project the cost of a project",
+        "Plan project management systems",
+        "Monitor and control the scope of a project",
+        "Control the project delivery schedules and costs",
+        "Control the project quality",
+        "Manage and control the human resources of a project",
+        "Conduct and control project communication and stakeholder interaction",
+        "Manage and control project risks",
+        "Manage and control project procurement activities",
+        "Manage and control project close-out activities"
+      ],
+      "Work Experience Modules": [
+        "Attend to project initiation management processes",
+        "Attend to project planning processes",
+        "Attend to project execution and control processes",
+        "Attend to project close out processes"
+      ]
+    }
+  }
+]
