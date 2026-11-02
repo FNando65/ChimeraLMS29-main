@@ -25,6 +25,7 @@ let cachedAnnouncements = [];
 let cachedMessages = [];
 let cachedProgress = [];
 let cachedMaterials = [];
+let cachedCalendar = [];
 const adminSectionView = { users: "all", courses: "catalogue", admissions: "applications" };
 let attendanceRegister = { courseId: "", date: "", learners: [], records: [] };
 let attendanceCourseId = "";
@@ -508,29 +509,28 @@ document.getElementById("forgot-password-link").addEventListener("click", event 
   if (emailField) emailField.value = knownEmail.includes("@") ? knownEmail : "";
 });
 
+document.getElementById("back-to-login").addEventListener("click", event => {
+  event.preventDefault();
+  showAuthTab("login");
+});
+
 const forgotPasswordForm = document.getElementById("forgot-password-form");
-if (forgotPasswordForm) {
-  forgotPasswordForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const button = forgotPasswordForm.querySelector('button[type="submit"]');
-    const values = Object.fromEntries(new FormData(forgotPasswordForm).entries());
-    if (!values.recoveryQuestion || !String(values.recoveryQuestion).trim()) {
-      showToast("Please choose a valid recovery question.");
-      return;
-    }
-    button.disabled = true;
-    try {
-      const result = await api("/auth/recover", { method: "POST", body: JSON.stringify(values) });
-      if (!result) throw new Error("Unable to connect to the LMS. Please try again when the server is available.");
-      forgotPasswordForm.reset();
-      showAuthTab("login");
-      showToast("Password updated. You can now sign in.");
-    } catch (error) {
-      showToast(error.message || "Could not reset your password", "error");
-      button.disabled = false;
-    }
-  });
-}
+forgotPasswordForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const button = forgotPasswordForm.querySelector('button[type="submit"]');
+  const values = Object.fromEntries(new FormData(forgotPasswordForm).entries());
+  button.disabled = true;
+  try {
+    const result = await api("/auth/recover", { method: "POST", body: JSON.stringify(values) });
+    if (!result) throw new Error("Unable to connect to the LMS. Please try again.");
+    forgotPasswordForm.reset();
+    showAuthTab("login");
+    showToast("Password updated. You can now sign in.");
+  } catch (error) {
+    showToast(error.message || "Could not reset your password", "error");
+    button.disabled = false;
+  }
+});
 
 const trackApplicationForm = document.getElementById("track-application-form");
 if (trackApplicationForm) {
@@ -631,10 +631,13 @@ async function openProfile() {
   const field = (label, name, value = "", type = "text", autocomplete = "off") =>
     `<label class="profile-field"><span>${label}</span><input class="form-control" type="${type}" name="${name}" value="${escapeHTML(value)}" autocomplete="${autocomplete}" /></label>`;
   const isLearner = profile.role === "learner";
-  const profileTitle = isLearner ? "Student Profile" : "Admin Profile";
+  const isLecturer = profile.role === "lecturer";
+  const profileTitle = isLearner ? "Student Profile" : isLecturer ? "Lecturer Profile" : "Admin Profile";
   const profileDescription = isLearner
     ? "View and update the personal information linked to your Chimera LMS account."
-    : "View and update the administrator information linked to your Chimera LMS account.";
+    : isLecturer
+      ? "View and update the lecturer information linked to your Chimera LMS account."
+      : "View and update the administrator information linked to your Chimera LMS account.";
   const studentFields = isLearner ? `
         ${field("Identity number", "identityNumber", profile.identityNumber)}
         ${field("Passport number", "passportNumber", profile.passportNumber)}
@@ -713,15 +716,15 @@ function displayRoleName(role) {
 function updateHeaderProfile(roleName, user) {
   const avatar = document.getElementById("profile-avatar-mini");
   const label = document.getElementById("role-badge");
-  if (user.role === "learner" && user.profileImage) {
+  if (user.profileImage && ["learner", "lecturer"].includes(user.role)) {
     avatar.hidden = true;
     label.replaceChildren();
     const image = document.createElement("img");
     image.className = "role-profile-image";
     image.src = user.profileImage;
-    image.alt = `${user.name || "Learner"} profile picture`;
+    image.alt = `${user.name || (user.role === "lecturer" ? "Lecturer" : "Learner")} profile picture`;
     label.appendChild(image);
-    label.setAttribute("aria-label", "Learner profile picture");
+    label.setAttribute("aria-label", `${user.role === "lecturer" ? "Lecturer" : "Learner"} profile picture`);
   } else {
     avatar.hidden = false;
     updateAvatar(avatar, user);
@@ -770,7 +773,7 @@ async function loadData() {
       return null;
     }
   };
-  const [courses, assignments, users, audit, notifications, submissions, announcements, messages, materials, applications] = await Promise.all([
+  const [courses, assignments, users, audit, notifications, submissions, announcements, messages, materials, applications, calendar] = await Promise.all([
     safeLoad("/courses"),
     safeLoad("/assignments"),
     role === "admin" ? safeLoad("/users") : Promise.resolve(null),
@@ -780,7 +783,8 @@ async function loadData() {
     safeLoad("/announcements", true),
     role === "learner" || role === "lecturer" ? safeLoad("/messages", true) : Promise.resolve([]),
     safeLoad("/materials", true),
-    role === "admin" ? safeLoad("/admin/applications") : Promise.resolve([])
+    role === "admin" ? safeLoad("/admin/applications") : Promise.resolve([]),
+    safeLoad("/calendar", true)
   ]);
   // Learner access is based on the authenticated programme returned by the API.
   // Do not fall back to a global demo catalogue when the API is unavailable.
@@ -799,6 +803,7 @@ async function loadData() {
   cachedAnnouncements = announcements || [];
   cachedMessages = messages || [];
   cachedMaterials = materials || [];
+  cachedCalendar = calendar || [];
   cachedProgress = (role === "lecturer" || role === "admin") && cachedCourses.length ? (await Promise.all(cachedCourses.map(course => safeLoad(`/progress?courseId=${encodeURIComponent(course.id)}`, true)))).flatMap(items => items || []) : [];
   updateNotificationBadge();
 }
@@ -1003,6 +1008,11 @@ function attachPageListeners() {
   });
   document.querySelectorAll("[data-lecturer-page]").forEach(button => button.addEventListener("click", () => { currentPage = button.dataset.lecturerPage; renderNav(); renderPage(); }));
   document.querySelectorAll("[data-lecturer-toast]").forEach(button => button.addEventListener("click", () => showToast(button.dataset.lecturerToast)));
+  document.querySelectorAll("[data-calendar-event]").forEach(button => button.addEventListener("click", () => openLecturerCalendarModal(button.dataset.calendarEvent)));
+  if (currentUser?.role === "lecturer" && currentPage === "content" && !document.getElementById("start-live-lecture-btn")) {
+    const heading = document.querySelector(".lecturer-heading");
+    if (heading) { const button = document.createElement("button"); button.id = "start-live-lecture-btn"; button.className = "lecturer-action"; button.textContent = "Start live lecture"; button.addEventListener("click", openLiveLectureModal); heading.appendChild(button); }
+  }
   const rosterSearch = document.querySelector(".roster-search");
   if (rosterSearch) rosterSearch.addEventListener("input", () => document.querySelectorAll(".roster-list article").forEach(row => { row.hidden = !row.textContent.toLowerCase().includes(rosterSearch.value.toLowerCase()); }));
   document.querySelectorAll("[data-admin-toast]").forEach(button => button.addEventListener("click", () => showToast(button.dataset.adminToast)));
@@ -1535,6 +1545,10 @@ function renderStudentCalendar() {
     if (key && assignment.status !== "completed") (grouped[key] ||= []).push(assignment);
     return grouped;
   }, {});
+  const calendarEventsByDate = cachedCalendar.reduce((grouped, event) => {
+    if (event.date) (grouped[event.date] ||= []).push(event);
+    return grouped;
+  }, {});
   const cells = [];
   for (let index = 0; index < 42; index++) {
     const day = index - leadingDays + 1;
@@ -1543,11 +1557,14 @@ function renderStudentCalendar() {
       continue;
     }
     const dateKey = localDateKey(new Date(year, month, day));
-    const hasAssignments = Boolean(assignmentsByDate[dateKey]);
-    const classes = ["calendar-day", dateKey === todayKey ? "is-today" : "", dateKey === selectedCalendarDate ? "is-selected" : "", hasAssignments ? "has-assignments" : ""].filter(Boolean).join(" ");
-    cells.push(`<button type="button" class="${classes}" data-calendar-date="${dateKey}" aria-label="${formattedDate(dateKey, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}${hasAssignments ? ", assignment due" : ""}">${day}${hasAssignments ? '<i aria-hidden="true"></i>' : ""}</button>`);
+    const hasEvents = Boolean(assignmentsByDate[dateKey]?.length || calendarEventsByDate[dateKey]?.length);
+    const classes = ["calendar-day", dateKey === todayKey ? "is-today" : "", dateKey === selectedCalendarDate ? "is-selected" : "", hasEvents ? "has-assignments" : ""].filter(Boolean).join(" ");
+    cells.push(`<button type="button" class="${classes}" data-calendar-date="${dateKey}" aria-label="${formattedDate(dateKey, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}${hasEvents ? ", scheduled activity" : ""}">${day}${hasEvents ? '<i aria-hidden="true"></i>' : ""}</button>`);
   }
-  const selectedAssignments = assignmentsByDate[selectedCalendarDate] || [];
+  const selectedAssignments = [
+    ...(calendarEventsByDate[selectedCalendarDate] || []).map(event => ({ ...event, course: event.type.replace("-", " "), due: event.date })),
+    ...(assignmentsByDate[selectedCalendarDate] || [])
+  ];
   return `<section class="student-calendar-card" aria-label="Student calendar">
     <div class="student-calendar-header"><div><p class="student-panel-eyebrow">YOUR SCHEDULE</p><h2>${calendarMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</h2></div><div class="calendar-controls"><button type="button" data-calendar-shift="-1" aria-label="Previous month">‹</button><button type="button" data-calendar-shift="1" aria-label="Next month">›</button></div></div>
     <div class="calendar-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
@@ -1556,11 +1573,41 @@ function renderStudentCalendar() {
   </section>`;
 }
 
+function openStudentReminderModal(date) {
+  openModal("Add calendar reminder", `<label class="form-group">Reminder title<input class="form-control" id="calendar-reminder-title" maxlength="180" required></label><label class="form-group">Time<input class="form-control" id="calendar-reminder-time" type="time"></label>`, '<button class="btn btn-ghost" id="calendar-reminder-cancel">Cancel</button><button class="btn btn-primary" id="calendar-reminder-save">Save reminder</button>');
+  document.getElementById("calendar-reminder-cancel").onclick = closeModal;
+  document.getElementById("calendar-reminder-save").onclick = async () => {
+    const title = document.getElementById("calendar-reminder-title").value.trim();
+    if (!title) { showToast("Enter a reminder title"); return; }
+    try {
+      const reminder = await api("/calendar/reminders", { method: "POST", body: JSON.stringify({ title, date, time: document.getElementById("calendar-reminder-time").value }) });
+      cachedCalendar.push(reminder);
+      closeModal();
+      renderPage();
+      showToast("Reminder added to your calendar");
+    } catch (error) { showToast(error.message || "Could not save reminder", "error"); }
+  };
+}
+
 function bindStudentCalendar() {
   const calendarRoot = document.getElementById("student-calendar");
   if (!calendarRoot) return;
   const draw = () => {
     calendarRoot.innerHTML = renderStudentCalendar();
+    const reminderButton = document.createElement("button");
+    reminderButton.type = "button";
+    reminderButton.className = "student-text-link";
+    reminderButton.textContent = "Add reminder";
+    reminderButton.addEventListener("click", () => openStudentReminderModal(selectedCalendarDate));
+    calendarRoot.querySelector(".calendar-selected")?.appendChild(reminderButton);
+    const liveEvents = cachedCalendar.filter(event => event.date === selectedCalendarDate && event.type === "lecture" && event.meetingUrl);
+    if (liveEvents.length) {
+      const livePanel = document.createElement("div");
+      livePanel.className = "calendar-live-lectures";
+      livePanel.innerHTML = `<strong>Live lectures</strong>${liveEvents.map(event => `<button type="button" class="btn btn-primary" data-live-event-id="${escapeHTML(event.id)}">Join ${escapeHTML(event.title)}</button>`).join("")}`;
+      calendarRoot.querySelector(".calendar-selected")?.appendChild(livePanel);
+      livePanel.querySelectorAll("[data-live-event-id]").forEach(button => button.addEventListener("click", () => joinLiveLecture(liveEvents.find(event => event.id === button.dataset.liveEventId))));
+    }
     calendarRoot.querySelectorAll("[data-calendar-shift]").forEach(button => {
       button.addEventListener("click", () => {
         calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + Number(button.dataset.calendarShift), 1);
@@ -1577,6 +1624,7 @@ function bindStudentCalendar() {
         draw();
       });
     });
+    calendarRoot.querySelectorAll("[data-calendar-add-reminder]").forEach(button => button.addEventListener("click", () => openStudentReminderModal(selectedCalendarDate)));
   };
   draw();
 }
@@ -1660,6 +1708,25 @@ function renderLecturerContent() {
   return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING · CONTENT</p><h1>Lessons &amp; content</h1><p>Build and manage lessons for your courses.</p></div><button class="lecturer-action" id="upload-materials-btn">Upload material</button></div><section class="lecturer-panel"><h2>Add a lesson</h2><form id="lesson-add-form" class="admin-broadcast-form"><label>Course<select name="courseId" required>${courses.map(c=>`<option value="${escapeHTML(c.id)}">${escapeHTML(c.title)}</option>`).join("")}</select></label><label>Lesson group<input name="group" value="Lessons" required></label><label>Lesson title<input name="title" required maxlength="180"></label><button class="lecturer-action" type="submit">Add lesson</button></form><h2>Published lessons</h2>${lessonRows||'<p class="student-empty-state">No lessons yet. Add the first lesson above.</p>'}<h2>Uploaded learning content</h2>${materialRows||'<p class="student-empty-state">No topic content uploaded yet.</p>'}</section></div>`;
 }
 
+function renderLecturerContentByLesson() {
+  const courses = cachedCourses.filter(course => course.instructorId === currentUser.id || course.instructor === currentUser.name);
+  const matchesCourse = (material, course) => material.courseId === course.id ||
+    String(material.course || "").toLowerCase() === String(course.code || "").toLowerCase() ||
+    String(material.course || "").toLowerCase() === String(course.title || "").toLowerCase();
+  const renderUpload = material => {
+    const downloadUrl = material.fileContent
+      ? `data:${material.fileType || "application/octet-stream"};base64,${material.fileContent}`
+      : "";
+    return `<div class="lecturer-uploaded-material"><span class="lecturer-course-icon">U</span><div><strong>${escapeHTML(material.title || material.filename)}</strong><small>${escapeHTML(material.filename || "Uploaded content")}</small></div>${downloadUrl ? `<a class="admin-inline-link" href="${escapeHTML(downloadUrl)}" download="${escapeHTML(material.filename)}">Download</a>` : '<span class="admin-muted">File unavailable</span>'}</div>`;
+  };
+  const lessonRows = courses.flatMap(course => Object.entries(course.modules || {}).flatMap(([group, lessons]) => lessons.map((title, index) => {
+    const uploads = cachedMaterials.filter(material => matchesCourse(material, course) && material.group === group && Number(material.moduleIndex) === index);
+    if (!uploads.length) return "";
+    return `<article class="lecturer-lesson-group"><div class="lecturer-course-list"><span class="lecturer-course-icon">L</span><div><strong>${escapeHTML(title)}</strong><small>${escapeHTML(course.code)} - ${escapeHTML(group)}</small></div><button class="admin-inline-link" data-lesson-delete data-course-id="${escapeHTML(course.id)}" data-group="${escapeHTML(group)}" data-index="${index}">Delete lesson</button></div><div class="lecturer-lesson-uploads">${uploads.length ? uploads.map(renderUpload).join("") : '<p class="student-empty-state">No content uploaded for this lesson yet.</p>'}</div></article>`;
+  }))).join("");
+  return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING - CONTENT</p><h1>Uploaded lesson content</h1><p>Only lessons with lecturer-uploaded content are shown here.</p></div><button class="lecturer-action" id="upload-materials-btn">Upload material</button></div><section class="lecturer-panel"><h2>Add a lesson</h2><form id="lesson-add-form" class="admin-broadcast-form"><label>Course<select name="courseId" required>${courses.map(course => `<option value="${escapeHTML(course.id)}">${escapeHTML(course.title)}</option>`).join("")}</select></label><label>Lesson group<input name="group" value="Lessons" required></label><label>Lesson title<input name="title" required maxlength="180"></label><button class="lecturer-action" type="submit">Add lesson</button></form><h2>Published lesson content</h2>${lessonRows || '<p class="student-empty-state">No lecturer-uploaded content is available yet. Upload material to a lesson to see it here.</p>'}</section></div>`;
+}
+
 function renderLecturerProgress() {
   const rows = cachedProgress.map(student => `<tr><td>${escapeHTML(student.name)}</td><td>${escapeHTML(student.email)}</td><td>${escapeHTML(student.courseTitle)} · ${student.progress}%<div class="progress-bar"><div class="progress-fill" style="width:${student.progress}%"></div></div></td><td>${student.completedModules}/${student.totalModules}</td><td>${student.submissions}</td><td><button class="admin-inline-link" data-message-student="${escapeHTML(student.id)}" data-course-id="${escapeHTML(student.courseId)}">Message</button></td></tr>`).join("");
   return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING · STUDENTS</p><h1>Enrolled learners</h1><p>Lesson progress and assessment activity across your courses.</p></div></div><section class="lecturer-panel"><div class="admin-table-wrap"><table class="admin-data-table"><thead><tr><th>Learner</th><th>Email</th><th>Course progress</th><th>Lessons</th><th>Submissions</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="6">No learners are enrolled in your courses yet.</td></tr>'}</tbody></table></div></section></div>`;
@@ -1671,14 +1738,57 @@ function renderLecturerCommunication() {
   return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING · COMMUNICATION</p><h1>Messages &amp; announcements</h1><p>Respond to learners and post course updates.</p></div></div><div class="lecturer-main-grid"><section class="lecturer-panel"><h2>Course messages</h2>${messages||'<p class="student-empty-state">No learner messages yet.</p>'}</section><section class="lecturer-panel"><h2>Post an announcement</h2><form data-announcement-form class="admin-broadcast-form"><label>Course<select name="courseId" required>${courses.map(c=>`<option value="${escapeHTML(c.id)}">${escapeHTML(c.title)}</option>`).join("")}</select></label><label>Title<input name="title" required></label><label>Message<textarea name="message" required rows="4"></textarea></label><button class="lecturer-action" type="submit">Post announcement</button></form><h2>Recent announcements</h2>${cachedAnnouncements.map(a=>`<article class="announcement-card"><strong>${escapeHTML(a.title)}</strong><p>${escapeHTML(a.message)}</p></article>`).join("")||'<p class="student-empty-state">No announcements yet.</p>'}</section></div></div>`;
 }
 
+function openLecturerCalendarModal(defaultType = "lecture") {
+  const courses = cachedCourses.filter(course => course.instructorId === currentUser.id || course.instructor === currentUser.name);
+  openModal("Add calendar event", `<label class="form-group">Title<input class="form-control" id="calendar-event-title" maxlength="180" required></label><label class="form-group">Type<select class="form-control" id="calendar-event-type"><option value="lecture">Lecture</option><option value="office-hours">Office hours</option><option value="deadline">Deadline</option><option value="reminder">Reminder</option></select></label><label class="form-group">Course<select class="form-control" id="calendar-event-course"><option value="">General</option>${courses.map(course => `<option value="${escapeHTML(course.id)}">${escapeHTML(course.title)}</option>`).join("")}</select></label><label class="form-group">Date<input class="form-control" id="calendar-event-date" type="date" value="${localDateKey(new Date())}" required></label><div class="form-group"><label>Start time<input class="form-control" id="calendar-event-start" type="time"></label><label>End time<input class="form-control" id="calendar-event-end" type="time"></label></div><label class="form-group">Description<textarea class="form-control" id="calendar-event-description" maxlength="1000"></textarea></label>`, '<button class="btn btn-ghost" id="calendar-event-cancel">Cancel</button><button class="btn btn-primary" id="calendar-event-save">Save event</button>');
+  document.getElementById("calendar-event-type").value = defaultType;
+  document.getElementById("calendar-event-cancel").onclick = closeModal;
+  document.getElementById("calendar-event-save").onclick = async () => {
+    const payload = { title: document.getElementById("calendar-event-title").value.trim(), type: document.getElementById("calendar-event-type").value, courseId: document.getElementById("calendar-event-course").value, date: document.getElementById("calendar-event-date").value, startTime: document.getElementById("calendar-event-start").value, endTime: document.getElementById("calendar-event-end").value, description: document.getElementById("calendar-event-description").value.trim() };
+    if (!payload.title || !payload.date) { showToast("Enter an event title and date"); return; }
+    try { const event = await api("/calendar", { method: "POST", body: JSON.stringify(payload) }); cachedCalendar.push(event); closeModal(); renderPage(); showToast("Calendar event saved"); }
+    catch (error) { showToast(error.message || "Could not save calendar event", "error"); }
+  };
+}
+
+function renderLecturerCalendar() {
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+  const days = Array.from({ length: 7 }, (_, index) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + index));
+  const eventsFor = date => cachedCalendar.filter(event => event.date === localDateKey(date));
+  const dayCards = days.map(day => `<article class="${localDateKey(day) === localDateKey(today) ? "today" : ""}"><small>${day.toLocaleDateString(undefined, { weekday: "short" })}</small><strong>${day.getDate()}</strong>${eventsFor(day).map(event => `<span>${escapeHTML(event.title)}${event.startTime ? `<br>${escapeHTML(event.startTime)}` : ""}</span>`).join("")}</article>`).join("");
+  const upcoming = cachedCalendar.filter(event => event.date >= localDateKey(today)).slice(0, 8);
+  return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING &gt; CALENDAR</p><h1>Schedule &amp; calendar</h1><p>Current lectures, deadlines, office hours, and reminders.</p></div><div class="admin-inline-actions"><button class="lecturer-action" data-calendar-event="lecture">Add lecture</button><button class="lecturer-action" data-calendar-event="office-hours">Set office hours</button></div></div><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">${today.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</span><h2>This week</h2></div><button class="lecturer-link" data-calendar-event="reminder">Add reminder</button></div><div class="calendar-week">${dayCards}</div></section><section class="lecturer-panel"><h2>Upcoming events</h2>${upcoming.length ? upcoming.map(event => `<article class="schedule-item"><time><b>${new Date(`${event.date}T00:00:00`).getDate()}</b><small>${new Date(`${event.date}T00:00:00`).toLocaleDateString(undefined, { month: "short" })}</small></time><span class="schedule-dot"></span><div><strong>${escapeHTML(event.title)}</strong><small>${escapeHTML(event.type.replace("-", " "))}${event.startTime ? ` · ${escapeHTML(event.startTime)}` : ""}</small></div></article>`).join("") : '<p class="student-empty-state">No upcoming events.</p>'}</section></div>`;
+}
+
+function openLiveLectureModal() {
+  const courses = cachedCourses.filter(course => course.instructorId === currentUser.id || course.instructor === currentUser.name);
+  openModal("Start live lecture", `<label class="form-group">Lecture title<input class="form-control" id="live-title" maxlength="180" required></label><label class="form-group">Course<select class="form-control" id="live-course" required>${courses.map(course => `<option value="${escapeHTML(course.id)}">${escapeHTML(course.title)}</option>`).join("")}</select></label><label class="form-group">Date<input class="form-control" id="live-date" type="date" value="${localDateKey(new Date())}" required></label><div class="form-group"><label>Start<input class="form-control" id="live-start" type="time" required></label><label>End<input class="form-control" id="live-end" type="time"></label></div><label class="form-group">Meeting link<input class="form-control" id="live-link" type="url" placeholder="https://zoom.us/... or https://meet.google.com/..." required></label>`, '<button class="btn btn-ghost" id="live-cancel">Cancel</button><button class="btn btn-primary" id="live-save">Publish live lecture</button>');
+  document.getElementById("live-cancel").onclick = closeModal;
+  document.getElementById("live-save").onclick = async () => {
+    const payload = { title: document.getElementById("live-title").value.trim(), type: "lecture", courseId: document.getElementById("live-course").value, date: document.getElementById("live-date").value, startTime: document.getElementById("live-start").value, endTime: document.getElementById("live-end").value, meetingUrl: document.getElementById("live-link").value.trim(), audience: "course" };
+    if (!payload.title || !payload.date || !payload.startTime || !/^https?:\/\//i.test(payload.meetingUrl)) { showToast("Enter the lecture details and a valid Zoom or Meet link"); return; }
+    try { await api("/calendar", { method: "POST", body: JSON.stringify(payload) }); closeModal(); await loadData(); renderPage(); showToast("Live lecture published"); }
+    catch (error) { showToast(error.message || "Could not publish live lecture", "error"); }
+  };
+}
+
+function joinLiveLecture(event) {
+  api("/calendar/join", { method: "POST", body: JSON.stringify({ eventId: event.id }) }).then(result => {
+    if (result?.meetingUrl) window.open(result.meetingUrl, "_blank", "noopener");
+    showToast("Attendance recorded. Opening live lecture.");
+  }).catch(error => showToast(error.message || "Could not join live lecture", "error"));
+}
+
 function renderLecturerSection(section) {
-  if (section === "content") return renderLecturerContent();
+  if (section === "content") return renderLecturerContentByLesson();
   if (section === "students") return renderLecturerProgress();
   if (section === "communication") return renderLecturerCommunication();
   if (section === "content") return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING <span>›</span> CONTENT</p><h1>Content management</h1><p>Organise and publish materials for your courses.</p></div><button class="lecturer-action" id="upload-materials-btn">＋ Upload material</button></div><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">COURSE MATERIALS</span><h2>Learning resources</h2><p>Files, lecture recordings, and links</p></div><button data-lecturer-toast="Week added">＋ Add week</button></div><div class="lecturer-course-list"><article><span class="lecturer-course-icon">▣</span><div><strong>Week 3 · Data visualisation</strong><small>Slides · PDF · Published 14 Oct</small></div><span class="resource-state">Visible</span><button data-lecturer-toast="Resource options opened">•••</button></article><article><span class="lecturer-course-icon">▶</span><div><strong>Lecture recording · Chart selection</strong><small>Video · 28 min · Published 16 Oct</small></div><span class="resource-state">Visible</span><button data-lecturer-toast="Resource options opened">•••</button></article></div><div class="upload-dropzone"><strong>＋ &nbsp;Upload videos, PDFs, slides, or links</strong><small>Drag files here or choose from your device</small></div></section></div>`;
   if (section === "students") return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING <span>›</span> STUDENTS</p><h1>Student management</h1><p>Track attendance, performance, and student engagement.</p></div><button class="lecturer-action" data-lecturer-toast="Student report exported">↓ Export roster</button></div><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">CLASS ROSTER</span><h2>Students <span class="attention-count">3 at risk</span></h2><p>124 students across 3 modules</p></div><input class="roster-search" type="search" placeholder="Search students…" aria-label="Search students"></div><div class="lecturer-course-list roster-list">${[["AM","Ayesha Mohamed","STU2024012","ayesha.m@learn.edu","88%"],["TM","Thabo Mokoena","STU2024038","thabo.m@learn.edu","42%"],["LN","Lerato Ndlovu","STU2024051","lerato.n@learn.edu","56%"],["PK","Peter Khumalo","STU2024064","peter.k@learn.edu","39%"]].map((s,i)=>`<article><span class="student-initial ${i===1?'coral':''}">${s[0]}</span><div><strong>${s[1]} ${i===1?'<em>At risk</em>':''}</strong><small>${s[2]} · ${s[3]}</small></div><span class="roster-grade">${s[4]}</span><select aria-label="Attendance for ${s[1]}"><option>Present</option><option>Absent</option><option>Late</option></select></article>`).join("")}</div></section></div>`;
   if (section === "communication") return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING <span>›</span> COMMUNICATION</p><h1>Communication</h1><p>Keep your classes informed and respond to student questions.</p></div><button class="lecturer-action" data-lecturer-toast="Announcement composer opened">＋ New announcement</button></div><div class="lecturer-main-grid"><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">STUDENT QUESTIONS</span><h2>Q&amp;A inbox</h2></div><span class="attention-count">3 new</span></div>${[["KM","Kagiso Mthembu","Could you clarify the analysis brief?","DATA210 · 12 min ago"],["SN","Sibongile Nkosi","Is the quiz open book?","UXD202 · 1 hour ago"],["JB","James Botha","Request for assignment extension","DATA210 · Yesterday"]].map(x=>`<article class="question-row"><span class="student-initial">${x[0]}</span><div><strong>${x[1]}</strong><p>${x[2]}</p><small>${x[3]}</small></div><button class="lecturer-link" data-lecturer-toast="Reply composer opened">Reply</button></article>`).join("")}</section><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">RECENT UPDATE</span><h2>Announcements</h2></div></div><div class="announcement-card"><strong>Assignment 2 resources are live</strong><p>Posted to Data Analytics · Yesterday at 14:32</p><button class="lecturer-link" data-lecturer-toast="Announcement details opened">View announcement →</button></div></section></div></div>`;
-  if (section === "schedule") return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING <span>›</span> CALENDAR</p><h1>Schedule &amp; calendar</h1><p>Lectures, deadlines, and marking due dates.</p></div><button class="lecturer-action" data-lecturer-toast="Office hours booking is now open">＋ Set office hours</button></div><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">OCTOBER 2026</span><h2>This week</h2></div><button data-lecturer-toast="Calendar reminders are enabled">Reminders on</button></div><div class="calendar-week">${[19,20,21,22,23,24,25].map((d,i)=>`<article class="${i===2?'today':''}"><small>${['MON','TUE','WED','THU','FRI','SAT','SUN'][i]}</small><strong>${d}</strong>${i===2?'<span>Lecture<br>09:00</span>':''}${i===3?'<span class="calendar-deadline">Assignment due</span>':''}</article>`).join("")}</div></section><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">UP NEXT</span><h2>Upcoming events</h2></div></div><article class="schedule-item"><time><b>21</b><small>OCT</small></time><span class="schedule-dot"></span><div><strong>Data Analytics · Lecture</strong><small>09:00 – 10:30 · Room B204</small></div></article><article class="schedule-item"><time><b>22</b><small>OCT</small></time><span class="schedule-dot purple"></span><div><strong>Assignment 2 · Deadline</strong><small>23:59 · DATA210</small></div></article></section></div>`;
+  if (section === "schedule") return renderLecturerCalendar();
   return `<div class="lecturer-dashboard"><div class="lecturer-heading"><div><p class="lecturer-crumb">TEACHING <span>›</span> ASSESSMENTS</p><h1>Assessments &amp; grading</h1><p>Create assessments, review submissions, and release feedback.</p></div><button class="lecturer-action" id="create-assessment-btn">＋ Create assessment</button></div><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">GRADEBOOK</span><h2>Recent assessments</h2><p>25 of 40 submissions received for Assignment 2</p></div><button data-lecturer-toast="Gradebook exported as a CSV file">↓ Export gradebook</button></div><div class="lecturer-course-list"><article><span class="lecturer-course-icon">A</span><div><strong>Assignment 2 · Data Analysis</strong><small>DATA210 · Due 22 Oct · 40 marks · 2 attempts</small></div><span class="resource-state">25 / 40 submitted</span><button data-lecturer-toast="Submissions opened">Review →</button></article><article><span class="lecturer-course-icon">Q</span><div><strong>Quiz 1 · Research methods</strong><small>UXD202 · Released 12 Oct · Auto-marked</small></div><span class="resource-state">Average 62%</span><button data-lecturer-toast="Feedback settings opened">Feedback →</button></article></div></section><section class="lecturer-panel"><div class="lecturer-panel-heading"><div><span class="lecturer-eyebrow">MARKING QUEUE</span><h2>Pending submissions</h2></div></div>${renderGrading()}</section></div>`;
 }
 

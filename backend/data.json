@@ -25,9 +25,9 @@
       "role": "lecturer",
       "avatar": "SC",
       "status": "Active",
-      "lastLogin": "2026-11-02T08:55:01.625Z",
-      "passwordSalt": "20e74d96264d1d56f7dd47fa58539da6",
-      "passwordHash": "7342808a855e46e2bff5d60a5e4917861058f56d4d903ee9fff89a6fc2770d0f68e6caeebc46d55449124e192f92afe718da0900e02e5fd6e8a4d4b36062a8ba"
+      "lastLogin": "2026-11-02T10:34:23.780Z",
+      "passwordSalt": "2a3fe7b56cb932a5b5961a39428a32c9",
+      "passwordHash": "14032e6b37312b22733c3795b8e2b8b07159422b2eca3b7b4c54e0c946b70830e20325097416f41045d4ed7e2c7d6520cb72d7609897cc1e63b392c513188f66"
     },
     {
       "id": "u3",
@@ -36,7 +36,7 @@
       "role": "admin",
       "avatar": "MR",
       "status": "Active",
-      "lastLogin": "2026-10-29T11:58:32.793Z",
+      "lastLogin": "2026-11-02T10:38:51.502Z",
       "passwordSalt": "647b7e78fa10c1855ba04cf4da1676c6",
       "passwordHash": "b988aba2abf3233b3ad3aea3bf99132aa570ba4069443a202b9ff63ca4a9aef2217913b39f4aeb592656813afbf58b463434a1311112ad55e178720025c848e9",
       "identityNumber": "",
@@ -125,9 +125,7 @@
             "4": true,
             "5": true,
             "6": true,
-            "7": true,
-            "8": true,
-            "9": true
+            "7": true
           }
         }
       }
@@ -271,8 +269,6 @@
       "students": 0,
       "modules": {
         "Knowledge Modules": [
-          "Introduction to data science and data analysis",
-          "Logical thinking and basic calculations: refresher",
           "Computers and computing systems",
           "Computing theory",
           "Basic statistics for data analytics",
@@ -476,8 +472,7 @@
         ],
         "Work Experience Modules": [
           "Attend to project initiation management processes",
-          "Attend to project execution and control processes",
-          "Attend to project close out processes"
+          "Attend to project execution and control processes"
         ]
       }
     }
@@ -536,14 +531,6 @@
   ],
   "submissions": [],
   "materials": [
-    {
-      "id": "51f41d5d-192c-4ea5-ab41-cb09d63c589b",
-      "course": "DSP",
-      "title": "KM1",
-      "filename": "Phiwa Practical Module 7.doc",
-      "uploadedBy": "u2",
-      "uploadedAt": "2026-10-20T08:25:46.872Z"
-    },
     {
       "id": "50f9d89d-8008-4417-bc94-e88989019937",
       "course": "",
@@ -612,6 +599,30 @@
     }
   ],
   "audit_log": [
+    {
+      "id": "f34e12c8-29c2-42ae-b351-a0d2916787e1",
+      "time": "2026-11-02T09:47:20.049Z",
+      "user": "s.chen@faculty.edu",
+      "role": "lecturer",
+      "action": "Removed lesson Attend to project close out processes from Project Manager",
+      "status": "Success"
+    },
+    {
+      "id": "7b85c3e2-512c-4305-afcf-d4574e6fd48f",
+      "time": "2026-11-02T09:47:04.321Z",
+      "user": "s.chen@faculty.edu",
+      "role": "lecturer",
+      "action": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "status": "Success"
+    },
+    {
+      "id": "dd4f1b5e-271e-4254-9644-320dcc2ceab4",
+      "time": "2026-11-02T09:46:56.597Z",
+      "user": "s.chen@faculty.edu",
+      "role": "lecturer",
+      "action": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "status": "Success"
+    },
     {
       "id": "768fa5c6-47f3-4946-bf6a-a6b3f205c18a",
       "time": "2026-11-02T08:56:44.095Z",
@@ -1063,6 +1074,132 @@
   ],
   "attendance": [],
   "notifications": [
+    {
+      "id": "bba8e934-82de-4dc2-955b-032535553233",
+      "userId": "928e140f-a807-4d66-add8-322e79dd3268",
+      "title": "LMS activity",
+      "message": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:47:04.321Z"
+    },
+    {
+      "id": "bd0a8091-4a87-49d8-aa69-781ec950089c",
+      "userId": "3fce05da-ed7a-46fe-924f-722b7b93b956",
+      "title": "LMS activity",
+      "message": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:47:04.321Z"
+    },
+    {
+      "id": "1a9b793a-a5e1-42dc-8e5d-842e1ef90d20",
+      "userId": "c2d3d80c-a511-4937-80b2-85c410926a13",
+      "title": "LMS activity",
+      "message": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:47:04.321Z"
+    },
+    {
+      "id": "71f8900a-ba54-4742-84fd-5a8e043981fc",
+      "userId": "68a4d4cf-e01a-4fd9-aee4-55c5eeb006c0",
+      "title": "LMS activity",
+      "message": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:47:04.321Z"
+    },
+    {
+      "id": "9c1a9fe9-b292-4bf2-8a18-e6492c3e06ba",
+      "userId": "b11d4e57-60c8-4a69-bdd4-b070f7aa94cb",
+      "title": "LMS activity",
+      "message": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:47:04.321Z"
+    },
+    {
+      "id": "af9b4f2b-d19e-4d4e-b73a-8104904884cf",
+      "userId": "0690fe98-4809-4f32-9ae1-f8aed014d9fa",
+      "title": "LMS activity",
+      "message": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:47:04.321Z"
+    },
+    {
+      "id": "3d20a9d5-0361-45e6-b511-b996aff7f2de",
+      "userId": "u1",
+      "title": "LMS activity",
+      "message": "Removed lesson Logical thinking and basic calculations: refresher from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:47:04.321Z"
+    },
+    {
+      "id": "3dd9a7ba-8cda-4844-85ad-ba1fe5f85cba",
+      "userId": "928e140f-a807-4d66-add8-322e79dd3268",
+      "title": "LMS activity",
+      "message": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:46:56.597Z"
+    },
+    {
+      "id": "8537cd57-5299-45a1-99f8-32ed90d37977",
+      "userId": "3fce05da-ed7a-46fe-924f-722b7b93b956",
+      "title": "LMS activity",
+      "message": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:46:56.597Z"
+    },
+    {
+      "id": "4779cda3-786f-4d6e-9643-dc9025cdb657",
+      "userId": "c2d3d80c-a511-4937-80b2-85c410926a13",
+      "title": "LMS activity",
+      "message": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:46:56.597Z"
+    },
+    {
+      "id": "227e762c-d563-45b4-85e4-02be7661190d",
+      "userId": "68a4d4cf-e01a-4fd9-aee4-55c5eeb006c0",
+      "title": "LMS activity",
+      "message": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:46:56.597Z"
+    },
+    {
+      "id": "0d9c9242-ba05-4a1e-a4bd-f8efdfac0af5",
+      "userId": "b11d4e57-60c8-4a69-bdd4-b070f7aa94cb",
+      "title": "LMS activity",
+      "message": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:46:56.597Z"
+    },
+    {
+      "id": "e081cdb4-1a07-4ae0-bf77-c844eabe061a",
+      "userId": "0690fe98-4809-4f32-9ae1-f8aed014d9fa",
+      "title": "LMS activity",
+      "message": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:46:56.597Z"
+    },
+    {
+      "id": "f881c38a-1e2e-4bcb-896a-834548a00d5b",
+      "userId": "u1",
+      "title": "LMS activity",
+      "message": "Removed lesson Introduction to data science and data analysis from Data Science Practitioner",
+      "type": "update",
+      "read": false,
+      "createdAt": "2026-11-02T09:46:56.597Z"
+    },
     {
       "id": "ba73822c-2d8e-4946-9c7a-b1c6cb3c87cb",
       "userId": "u3",
@@ -1552,5 +1689,7 @@
   ],
   "messages": [],
   "announcements": [],
-  "quiz_attempts": []
+  "quiz_attempts": [],
+  "calendar_events": [],
+  "calendar_reminders": []
 }

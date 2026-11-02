@@ -65,7 +65,9 @@ function initialData() {
     notifications: [],
     messages: [],
     announcements: [],
-    quiz_attempts: []
+    quiz_attempts: [],
+    calendar_events: [],
+    calendar_reminders: []
   };
 }
 
@@ -75,7 +77,7 @@ function loadData() {
   try {
     const data = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
     if (!Array.isArray(data.attendance)) data.attendance = [];
-    for (const key of ["notifications", "audit_log", "courses", "assignments", "submissions", "enrollments", "materials", "program_applications", "messages", "announcements", "quiz_attempts"]) if (!Array.isArray(data[key])) data[key] = [];
+    for (const key of ["notifications", "audit_log", "courses", "assignments", "submissions", "enrollments", "materials", "program_applications", "messages", "announcements", "quiz_attempts", "calendar_events", "calendar_reminders"]) if (!Array.isArray(data[key])) data[key] = [];
     return data;
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
@@ -747,13 +749,7 @@ async function handleRequest(request, response) {
     const answerHash = crypto.createHash("sha256").update(String(body.recoveryAnswer || "").trim().toLowerCase()).digest("hex");
     const password = String(body.password || "");
     if (password.length < 8) return send(response, 400, { error: "Password must have at least 8 characters" });
-    const account = data.users.find(item =>
-      loginKey(item.email) === email &&
-      item.recoveryQuestion &&
-      loginKey(item.recoveryQuestion) === loginKey(recoveryQuestion) &&
-      item.recoveryAnswerHash &&
-      item.recoveryAnswerHash === answerHash
-    );
+    const account = data.users.find(item => loginKey(item.email) === email && item.recoveryQuestion && loginKey(item.recoveryQuestion) === loginKey(recoveryQuestion) && item.recoveryAnswerHash === answerHash);
     if (!account) return send(response, 400, { error: "Email, recovery question, and answer could not be verified" });
     const { salt, hash } = hashPassword(password);
     account.passwordSalt = salt;
@@ -918,6 +914,65 @@ async function handleRequest(request, response) {
   if (request.method === "GET" && route === "/api/me") {
     const account = data.users.find(item => item.id === user.id);
     return send(response, 200, profileUser(account));
+  }
+  if (request.method === "GET" && route === "/api/calendar") {
+    if (!requireRole(user, ["learner", "lecturer", "admin"])) return send(response, 403, { error: "Forbidden" });
+    const enrolledCourseIds = new Set(data.enrollments.filter(item => item.userId === user.id).map(item => item.courseId));
+    const profile = data.users.find(item => item.id === user.id);
+    const learnerCourseIds = new Set(data.courses.filter(course => courseNameKey(course.title) === courseNameKey(profile?.selectedCourse)).map(course => course.id));
+    const visibleEvents = data.calendar_events.filter(event => {
+      if (user.role === "admin" || event.createdBy === user.id) return true;
+      if (event.audience === "all") return true;
+      return event.courseId && (enrolledCourseIds.has(event.courseId) || learnerCourseIds.has(event.courseId));
+    });
+    const ownReminders = data.calendar_reminders.filter(reminder => reminder.userId === user.id);
+    return send(response, 200, [...visibleEvents, ...ownReminders].sort((a, b) => `${a.date}T${a.startTime || a.time || ""}`.localeCompare(`${b.date}T${b.startTime || b.time || ""}`)));
+  }
+  if (request.method === "POST" && route === "/api/calendar") {
+    if (!requireRole(user, ["lecturer", "admin"])) return send(response, 403, { error: "Only lecturers and admins can create calendar events" });
+    const body = await readBody(request);
+    const title = String(body.title || "").trim().slice(0, 180);
+    const date = String(body.date || "");
+    const type = String(body.type || "lecture").toLowerCase();
+    const course = body.courseId ? data.courses.find(item => item.id === String(body.courseId)) : null;
+    if (!title || !isDateKey(date) || !["lecture", "office-hours", "reminder", "deadline"].includes(type)) return send(response, 400, { error: "Enter a title, valid date, and event type" });
+    if (user.role === "lecturer" && (!course || !canManageCourse(user, course))) return send(response, 403, { error: "Choose one of your courses" });
+    const event = {
+      id: crypto.randomUUID(), title, date, startTime: String(body.startTime || "").slice(0, 5), endTime: String(body.endTime || "").slice(0, 5),
+      type, courseId: course?.id || null, course: course?.title || "", meetingUrl: /^https?:\/\//i.test(String(body.meetingUrl || "")) ? String(body.meetingUrl).trim().slice(0, 500) : "", description: String(body.description || "").trim().slice(0, 1000),
+      audience: body.audience === "all" ? "all" : "course", createdBy: user.id, createdAt: new Date().toISOString()
+    };
+    data.calendar_events.push(event);
+    const recipients = event.audience === "all" ? data.users.filter(item => item.role === "learner" && item.status !== "Inactive") : data.users.filter(item => item.role === "learner" && (data.enrollments.some(enrollment => enrollment.userId === item.id && enrollment.courseId === course?.id) || courseNameKey(item.selectedCourse) === courseNameKey(course?.title)));
+    recipients.forEach(item => notify(data, item.id, "New calendar event", `${event.title} is scheduled for ${event.date}.`));
+    saveData(data);
+    return send(response, 201, event);
+  }
+  if (request.method === "POST" && route === "/api/calendar/join") {
+    if (!requireRole(user, ["learner"])) return send(response, 403, { error: "Only learners can join live lectures" });
+    const body = await readBody(request);
+    const event = data.calendar_events.find(item => item.id === String(body.eventId || "") && item.type === "lecture");
+    const learner = data.users.find(item => item.id === user.id);
+    const course = event && data.courses.find(item => item.id === event.courseId);
+    const enrolled = course && (data.enrollments.some(item => item.userId === user.id && item.courseId === course.id) || courseNameKey(learner?.selectedCourse) === courseNameKey(course.title));
+    if (!event || !course || !enrolled || !event.meetingUrl) return send(response, 403, { error: "This live lecture is not available to you" });
+    const attendanceDate = event.date;
+    const existing = data.attendance.find(item => item.courseId === course.id && item.date === attendanceDate && item.userId === user.id);
+    if (existing) { existing.status = "present"; existing.source = "live-lecture"; existing.eventId = event.id; }
+    else data.attendance.push({ id: crypto.randomUUID(), courseId: course.id, date: attendanceDate, userId: user.id, status: "present", source: "live-lecture", eventId: event.id, recordedAt: new Date().toISOString() });
+    recordActivity(data, learner, `Joined live lecture ${event.title}`, [course.instructorId]);
+    saveData(data);
+    return send(response, 200, { meetingUrl: event.meetingUrl, attendance: "present" });
+  }
+  if (request.method === "POST" && route === "/api/calendar/reminders") {
+    if (!requireRole(user, ["learner", "lecturer", "admin"])) return send(response, 403, { error: "Forbidden" });
+    const body = await readBody(request);
+    const title = String(body.title || "").trim().slice(0, 180), date = String(body.date || "");
+    if (!title || !isDateKey(date)) return send(response, 400, { error: "Enter a reminder title and valid date" });
+    const reminder = { id: crypto.randomUUID(), title, date, time: String(body.time || "").slice(0, 5), type: "reminder", userId: user.id, createdAt: new Date().toISOString() };
+    data.calendar_reminders.push(reminder);
+    saveData(data);
+    return send(response, 201, reminder);
   }
   if (route === "/api/notifications" && request.method === "GET") return send(response, 200, data.notifications.filter(n => n.userId === user.id));
   if (route === "/api/notifications/read" && request.method === "POST") {

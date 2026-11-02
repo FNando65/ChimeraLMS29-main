@@ -143,7 +143,6 @@
           <button type="button" class="auth-tab active" data-auth-tab="login" role="tab" aria-selected="true">Login</button>
           <button type="button" class="auth-tab" data-auth-tab="register" role="tab" aria-selected="false">Create Profile</button>
           <button type="button" class="auth-tab" data-auth-tab="track" role="tab" aria-selected="false">Track Application</button>
-          <button type="button" class="auth-tab" data-auth-tab="forgot" role="tab" aria-selected="false">Forgot Password</button>
         </div>
 
         <div class="auth-form-panel">
@@ -193,6 +192,17 @@
           </form>
 
           <form id="forgot-password-form" class="auth-form" data-auth-form="forgot">
+            <div class="auth-form-header"><h1>Reset your password</h1><p>Verify your account details and choose a new password.</p></div>
+            <div class="form-group"><label for="recovery-email">Email address</label><input type="email" id="recovery-email" name="email" placeholder="name@example.com" autocomplete="email" required /></div>
+            <div class="form-group"><label for="recovery-question">Recovery question</label><select id="recovery-question" name="recoveryQuestion" required><option value="">Choose a question</option><option>What was the name of your first school?</option><option>What is the name of the town where you were born?</option><option>What was the first concert you attended?</option><option>What is the name of your favourite teacher?</option></select></div>
+            <div class="form-group"><label for="recovery-answer">Recovery answer</label><input type="text" id="recovery-answer" name="recoveryAnswer" autocomplete="off" required /></div>
+            <div class="form-group"><label for="new-password">New password</label><input type="password" id="new-password" name="password" autocomplete="new-password" minlength="8" required /></div>
+            <button type="submit" class="btn btn-primary">Update password</button>
+            <p class="auth-switch"><a href="#" id="back-to-login">Back to login</a></p>
+          </form>
+
+          <!-- Password recovery is intentionally unavailable in this portal. -->
+          <!-- <form id="disabled-password-form" class="auth-form" data-auth-form="disabled">
             <div class="auth-form-header">
               <h1>Reset your password</h1>
               <p>Use your registered email, recovery answer, and a secure new password.</p>
@@ -220,7 +230,7 @@
               <input type="password" id="new-password" name="password" placeholder="••••••••" autocomplete="new-password" minlength="8" required />
             </div>
             <button type="submit" class="btn btn-primary">Update password</button>
-          </form>
+          </form> -->
         </div>
 
         <a href="#" class="login-home-link" id="login-home">← Back to home</a>
