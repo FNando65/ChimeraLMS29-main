@@ -25,7 +25,7 @@
       "role": "lecturer",
       "avatar": "SC",
       "status": "Active",
-      "lastLogin": "2026-10-26T12:39:39.075Z",
+      "lastLogin": "2026-11-02T08:55:01.625Z",
       "passwordSalt": "20e74d96264d1d56f7dd47fa58539da6",
       "passwordHash": "7342808a855e46e2bff5d60a5e4917861058f56d4d903ee9fff89a6fc2770d0f68e6caeebc46d55449124e192f92afe718da0900e02e5fd6e8a4d4b36062a8ba"
     },
@@ -476,7 +476,6 @@
         ],
         "Work Experience Modules": [
           "Attend to project initiation management processes",
-          "Attend to project planning processes",
           "Attend to project execution and control processes",
           "Attend to project close out processes"
         ]
@@ -613,6 +612,14 @@
     }
   ],
   "audit_log": [
+    {
+      "id": "768fa5c6-47f3-4946-bf6a-a6b3f205c18a",
+      "time": "2026-11-02T08:56:44.095Z",
+      "user": "s.chen@faculty.edu",
+      "role": "lecturer",
+      "action": "Removed lesson Attend to project planning processes from Project Manager",
+      "status": "Success"
+    },
     {
       "id": "063e8ad2-2155-488b-9ba8-9a5a5c301e88",
       "time": "2026-10-28T19:51:14.779Z",

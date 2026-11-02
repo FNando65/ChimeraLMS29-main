@@ -1647,9 +1647,11 @@ function renderLecturerContent() {
   const courses = cachedCourses.filter(c => c.instructorId === currentUser.id || c.instructor === currentUser.name);
   const lessonRows = courses.flatMap(course => Object.entries(course.modules || {}).flatMap(([group, lessons]) => lessons.map((title, index) => `<article class="lecturer-course-list"><span class="lecturer-course-icon">L</span><div><strong>${escapeHTML(title)}</strong><small>${escapeHTML(course.code)} · ${escapeHTML(group)}</small></div><button class="admin-inline-link" data-lesson-delete data-course-id="${escapeHTML(course.id)}" data-group="${escapeHTML(group)}" data-index="${index}">Delete lesson</button></article>`))).join("");
   const materialRows = cachedMaterials.map(material => {
-    const course = courses.find(item => item.id === material.courseId);
-    const topic = course?.modules?.[material.group]?.[material.moduleIndex];
-    if (!course || !topic) return "";
+    const course = courses.find(item => item.id === material.courseId ||
+      String(material.course || "").toLowerCase() === String(item.code || "").toLowerCase() ||
+      String(material.course || "").toLowerCase() === String(item.title || "").toLowerCase());
+    const topic = course?.modules?.[material.group]?.[material.moduleIndex] || "Course content";
+    if (!course) return "";
     const downloadUrl = material.fileContent
       ? `data:${material.fileType || "application/octet-stream"};base64,${material.fileContent}`
       : "";
@@ -2293,6 +2295,7 @@ function openCreateAssessmentModal() {
 }
 
 function openUploadModal() {
+  selectedFile = null;
   const courses = cachedCourses.filter(course => currentUser.role !== "lecturer" || course.instructorId === currentUser.id || course.instructor === currentUser.name);
   if (!courses.length) { showToast("There are no courses available to upload content to."); return; }
   const courseOptions = courses.map(course => `<option value="${escapeHTML(course.id)}">${escapeHTML(course.title)}</option>`).join("");
